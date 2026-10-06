@@ -1,6 +1,5 @@
-import Image from "next/image";
 import Link from "next/link";
-import mountain from "@/app/assets/mountain.jpg";
+import { HeroImage } from "./hero-image";
 
 const nav = [
   { label: "Work", href: "/work" },
@@ -64,18 +63,15 @@ export default function Home() {
 
       {/* the frame */}
       <section className="relative flex-1 overflow-hidden">
-        <Image
-          src={mountain}
-          alt="Snow-capped peak at golden hour"
-          fill
-          priority
-          placeholder="blur"
-          sizes="100vw"
-          className="kenburns -z-20 object-cover object-[50%_0%]"
-        />
+        <HeroImage />
         <div className="absolute inset-0 -z-10 bg-gradient-to-t from-black/60 via-black/5 via-40% to-transparent" />
         <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_100%_100%,rgba(0,0,0,0.6),transparent_55%)]" />
-        <div className="grain" />
+        <div className="grain-wrap">
+          <div className="grain" />
+        </div>
+        <div className="grain-wrap edge-mask">
+          <div className="grain grain-strong" />
+        </div>
 
         <h1 className="fade-up absolute inset-x-0 top-[7%] px-5 text-center text-[clamp(2.75rem,8.2vw,8.75rem)] leading-[0.92] font-semibold tracking-[-0.055em] text-ink [animation-delay:1.3s] sm:top-[9%]">
           the things we do <br />
