@@ -1,7 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import mountain from "@/app/assets/mountain.jpg";
-import { projects } from "@/lib/projects";
 
 const links = [
   { label: "GitHub", href: "https://github.com/whiletrueee" },
@@ -21,8 +20,8 @@ export default function Home() {
         sizes="100vw"
         className="settle -z-20 object-cover object-[50%_0%]"
       />
-      {/* darken the ridge so the cards read */}
-      <div className="absolute inset-0 -z-10 bg-gradient-to-t from-black/70 via-black/10 via-55% to-transparent" />
+      {/* darken the base so the footer reads */}
+      <div className="absolute inset-0 -z-10 bg-gradient-to-t from-black/50 via-transparent via-30% to-transparent" />
 
       <header className="rise mx-auto flex w-full max-w-6xl items-center justify-between px-5 pt-6 sm:px-8">
         <Link href="/" className="text-[15px] font-medium tracking-tight">
@@ -43,7 +42,7 @@ export default function Home() {
         </nav>
       </header>
 
-      <section className="mx-auto flex w-full max-w-6xl flex-1 flex-col items-center px-5 pt-[9vh] text-center sm:px-8">
+      <section className="mx-auto flex w-full max-w-6xl flex-1 flex-col items-center px-5 pt-[5vh] text-center sm:pt-[9vh] sm:px-8">
         <p className="rise text-xs font-medium tracking-[0.25em] text-ink/60 uppercase [animation-delay:150ms]">
           Harshit Singh · Bangalore
         </p>
@@ -51,47 +50,15 @@ export default function Home() {
           A quiet corner of the internet for things I{" "}
           <em className="text-[#8a4a2b]">keep building.</em>
         </h1>
-        <p className="rise mt-7 font-mono text-[13px] text-ink/55 [animation-delay:400ms]">
+        <p className="rise mt-4 font-mono sm:mt-7 text-[13px] text-ink/55 [animation-delay:400ms]">
           while (true) {"{"} build(); {"}"}
         </p>
       </section>
 
-      <section className="mx-auto w-full max-w-6xl px-5 pt-24 pb-6 sm:px-8">
-        <ul className="grid gap-3 sm:grid-cols-3">
-          {projects.map((p, i) => (
-            <li
-              key={p.name}
-              className="rise"
-              style={{ animationDelay: `${550 + i * 120}ms` }}
-            >
-              <a
-                href={p.href}
-                target="_blank"
-                rel="noreferrer"
-                className="group flex h-full flex-col rounded-2xl border border-white/15 bg-white/[0.07] p-5 text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.15)] backdrop-blur-xl transition duration-500 hover:-translate-y-1 hover:border-white/30 hover:bg-white/[0.13]"
-              >
-                <div className="flex items-center justify-between text-[11px] font-medium tracking-[0.18em] text-white/55 uppercase">
-                  {p.tag}
-                  <span className="text-base tracking-normal transition duration-500 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-white">
-                    ↗
-                  </span>
-                </div>
-                <h2 className="mt-8 font-serif text-3xl tracking-tight">
-                  {p.name}
-                </h2>
-                <p className="mt-2 text-sm leading-relaxed text-white/65">
-                  {p.blurb}
-                </p>
-              </a>
-            </li>
-          ))}
-        </ul>
-
-        <footer className="mt-6 flex items-center justify-between text-xs text-white/45">
-          <span>© {new Date().getFullYear()} Harshit Singh</span>
-          <span>more soon</span>
-        </footer>
-      </section>
+      <footer className="rise mx-auto flex w-full max-w-6xl items-center justify-between px-5 pb-6 text-xs text-white/55 sm:px-8 [animation-delay:550ms]">
+        <span>© {new Date().getFullYear()} Harshit Singh</span>
+        <span>more soon</span>
+      </footer>
     </main>
   );
 }
