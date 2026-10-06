@@ -24,7 +24,7 @@ const geistSans = localFont({
 export const metadata: Metadata = {
   title: "whiletrueee — Harshit Singh",
   description:
-    "I make things I want to exist. Software engineer, filmmaker, photographer, collector of unfinished ideas.",
+    "The things we do do things to us. Software engineer, filmmaker, photographer, collector of unfinished ideas.",
 };
 
 export const viewport: Viewport = {

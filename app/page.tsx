@@ -13,7 +13,7 @@ const lines = [
   <>Some are made with code.</>,
   <>Some with a camera.</>,
   <>
-    Some require a <em className="font-light">plane ticket.</em>
+    Some require a <em className="font-light">boarding pass.</em>
   </>,
 ];
 
@@ -78,8 +78,8 @@ export default function Home() {
         <div className="grain" />
 
         <h1 className="fade-up absolute inset-x-0 top-[7%] px-5 text-center text-[clamp(2.75rem,8.2vw,8.75rem)] leading-[0.92] font-semibold tracking-[-0.055em] text-ink [animation-delay:1.3s] sm:top-[9%]">
-          I make things <br />I want to{" "}
-          <em className="font-light">exist.</em>
+          the things we do <br />
+          do things to <em className="font-light">us</em>
         </h1>
 
         <div className="absolute inset-x-5 bottom-[6%] flex flex-col gap-8 text-white sm:inset-x-10 sm:flex-row sm:items-end sm:justify-between lg:inset-x-14">
