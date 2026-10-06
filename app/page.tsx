@@ -17,6 +17,24 @@ const lines = [
   </>,
 ];
 
+const projects = [
+  {
+    name: "Jev Router",
+    blurb: "Sends each LLM request to the cheapest model that can answer it.",
+    href: "https://github.com/whiletrueee/router",
+  },
+  {
+    name: "Code Storyline",
+    blurb: "A VS Code extension that explains any file in plain English.",
+    href: "https://github.com/whiletrueee/vscode-code-storyline",
+  },
+  {
+    name: "Headout",
+    blurb: "Software engineer at Headout.",
+    href: "https://www.headout.com",
+  },
+];
+
 const bar =
   "shrink-0 bg-black px-5 font-mono text-[10px] tracking-[0.14em] text-white/55 uppercase sm:px-10 sm:text-[11px] sm:tracking-[0.18em] lg:px-14";
 
@@ -56,6 +74,7 @@ export default function Home() {
           className="kenburns -z-20 object-cover object-[50%_0%]"
         />
         <div className="absolute inset-0 -z-10 bg-gradient-to-t from-black/60 via-black/5 via-40% to-transparent" />
+        <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_100%_100%,rgba(0,0,0,0.6),transparent_55%)]" />
         <div className="grain" />
 
         <h1 className="fade-up absolute inset-x-0 top-[7%] px-5 text-center text-[clamp(2.75rem,8.2vw,8.75rem)] leading-[0.92] font-semibold tracking-[-0.055em] text-ink [animation-delay:1.3s] sm:top-[9%]">
@@ -63,16 +82,50 @@ export default function Home() {
           <em className="font-light">exist.</em>
         </h1>
 
-        <div className="absolute bottom-[7%] left-5 text-[clamp(1.25rem,2.3vw,2.25rem)] leading-[1.2] font-medium tracking-[-0.035em] text-white sm:left-10 lg:left-14">
-          {lines.map((l, i) => (
-            <p
-              key={i}
-              className="fade-up"
-              style={{ animationDelay: `${2.5 + i * 0.9}s` }}
-            >
-              {l}
-            </p>
-          ))}
+        <div className="absolute inset-x-5 bottom-[6%] flex flex-col gap-8 text-white sm:inset-x-10 sm:flex-row sm:items-end sm:justify-between lg:inset-x-14">
+          <div className="text-[clamp(1.25rem,2.3vw,2.25rem)] leading-[1.2] font-medium tracking-[-0.035em]">
+            {lines.map((l, i) => (
+              <p
+                key={i}
+                className="fade-up"
+                style={{ animationDelay: `${2.5 + i * 0.9}s` }}
+              >
+                {l}
+              </p>
+            ))}
+          </div>
+
+          <ul className="w-full space-y-3 [text-shadow:0_1px_12px_rgba(0,0,0,0.35)] sm:w-72">
+            {projects.map((p, i) => (
+              <li
+                key={p.name}
+                className="fade-up border-t border-white/20 pt-3"
+                style={{ animationDelay: `${5.3 + i * 0.25}s` }}
+              >
+                <a
+                  href={p.href}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="group flex items-baseline gap-3"
+                >
+                  <span className="font-mono text-[10px] text-white/45">
+                    0{i + 1}
+                  </span>
+                  <span className="flex-1">
+                    <span className="block text-[15px] font-medium tracking-[-0.01em]">
+                      {p.name}
+                    </span>
+                    <span className="hidden text-[13px] leading-snug text-white/70 sm:block">
+                      {p.blurb}
+                    </span>
+                  </span>
+                  <span className="text-white/50 transition duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-white">
+                    ↗
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ul>
         </div>
 
         {/* curtains that open on load */}
