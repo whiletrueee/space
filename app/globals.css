@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 @theme inline {
-  --font-sans: var(--font-inter-tight);
-  --font-serif: var(--font-instrument-serif);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
   --color-sky: #c8ccc4;
   --color-ink: #1d1a17;
   --color-dusk: #241a14;
@@ -14,8 +14,7 @@ html {
 
 body {
   color: var(--color-ink);
-  font-family: var(--font-inter-tight), system-ui, sans-serif;
-  font-feature-settings: "ss01", "cv11";
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
 }
 
 ::selection {

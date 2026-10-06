@@ -13,12 +13,12 @@ const lines = [
   <>Some are made with code.</>,
   <>Some with a camera.</>,
   <>
-    Some require a <em>plane ticket.</em>
+    Some require a <em className="font-light">plane ticket.</em>
   </>,
 ];
 
 const bar =
-  "shrink-0 bg-black px-5 text-[10px] font-medium tracking-[0.18em] text-white/55 uppercase sm:px-10 sm:text-[11px] sm:tracking-[0.22em] lg:px-14";
+  "shrink-0 bg-black px-5 font-mono text-[10px] tracking-[0.14em] text-white/55 uppercase sm:px-10 sm:text-[11px] sm:tracking-[0.18em] lg:px-14";
 
 export default function Home() {
   return (
@@ -58,12 +58,12 @@ export default function Home() {
         <div className="absolute inset-0 -z-10 bg-gradient-to-t from-black/60 via-black/5 via-40% to-transparent" />
         <div className="grain" />
 
-        <h1 className="fade-up absolute inset-x-0 top-[7%] px-5 text-center font-serif text-[clamp(2.9rem,8.6vw,9rem)] leading-[0.9] tracking-[-0.03em] text-ink [animation-delay:1.3s] sm:top-[9%]">
+        <h1 className="fade-up absolute inset-x-0 top-[7%] px-5 text-center text-[clamp(2.75rem,8.2vw,8.75rem)] leading-[0.92] font-semibold tracking-[-0.055em] text-ink [animation-delay:1.3s] sm:top-[9%]">
           I make things <br />I want to{" "}
-          <em>exist.</em>
+          <em className="font-light">exist.</em>
         </h1>
 
-        <div className="absolute bottom-[7%] left-5 font-serif text-[clamp(1.5rem,2.8vw,2.75rem)] leading-[1.15] text-white sm:left-10 lg:left-14">
+        <div className="absolute bottom-[7%] left-5 text-[clamp(1.25rem,2.3vw,2.25rem)] leading-[1.2] font-medium tracking-[-0.035em] text-white sm:left-10 lg:left-14">
           {lines.map((l, i) => (
             <p
               key={i}

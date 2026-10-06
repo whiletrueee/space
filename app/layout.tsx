@@ -1,17 +1,24 @@
 import type { Metadata, Viewport } from "next";
-import { Inter_Tight, Instrument_Serif } from "next/font/google";
+import localFont from "next/font/local";
+import { GeistMono } from "geist/font/mono";
 import "./globals.css";
 
-const interTight = Inter_Tight({
-  variable: "--font-inter-tight",
-  subsets: ["latin"],
-});
-
-const instrumentSerif = Instrument_Serif({
-  variable: "--font-instrument-serif",
-  subsets: ["latin"],
-  weight: "400",
-  style: ["normal", "italic"],
+// Geist from the official `geist` package; its GeistSans export skips the
+// italic axis, so load both variable files here.
+const geistSans = localFont({
+  src: [
+    {
+      path: "../node_modules/geist/dist/fonts/geist-sans/Geist-Variable.woff2",
+      weight: "100 900",
+      style: "normal",
+    },
+    {
+      path: "../node_modules/geist/dist/fonts/geist-sans/Geist-Italic[wght].woff2",
+      weight: "100 900",
+      style: "italic",
+    },
+  ],
+  variable: "--font-geist-sans",
 });
 
 export const metadata: Metadata = {
@@ -28,7 +35,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${interTight.variable} ${instrumentSerif.variable} antialiased`}
+      className={`${geistSans.variable} ${GeistMono.variable} antialiased`}
     >
       <body>{children}</body>
     </html>
