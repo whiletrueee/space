@@ -1,14 +1,9 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono, Instrument_Serif } from "next/font/google";
+import type { Metadata, Viewport } from "next";
+import { Inter_Tight, Instrument_Serif } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const interTight = Inter_Tight({
+  variable: "--font-inter-tight",
   subsets: ["latin"],
 });
 
@@ -22,16 +17,20 @@ const instrumentSerif = Instrument_Serif({
 export const metadata: Metadata = {
   title: "whiletrueee — Harshit Singh",
   description:
-    "A small corner of the internet where Harshit Singh keeps starting things. Side projects, experiments and half-finished ideas.",
+    "A quiet corner of the internet where Harshit Singh keeps building things.",
+};
+
+export const viewport: Viewport = {
+  themeColor: "#c8ccc4",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} ${instrumentSerif.variable} h-full antialiased`}
+      className={`${interTight.variable} ${instrumentSerif.variable} antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body>{children}</body>
     </html>
   );
 }
