@@ -17,11 +17,11 @@ const instrumentSerif = Instrument_Serif({
 export const metadata: Metadata = {
   title: "whiletrueee — Harshit Singh",
   description:
-    "A quiet corner of the internet where Harshit Singh keeps building things.",
+    "I make things I want to exist. Software engineer, filmmaker, photographer, collector of unfinished ideas.",
 };
 
 export const viewport: Viewport = {
-  themeColor: "#c8ccc4",
+  themeColor: "#000000",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
