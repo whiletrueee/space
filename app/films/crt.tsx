@@ -11,6 +11,7 @@ type Player = {
   getPlaylist(): string[] | null;
   playVideoAt(i: number): void;
   setLoop(loop: boolean): void;
+  getVideoData(): { title?: string };
   destroy(): void;
 };
 type YT = { Player: new (el: HTMLElement, opts: object) => Player };
@@ -43,6 +44,7 @@ function loadApi() {
 export function Crt() {
   const [on, setOn] = useState(false);
   const [warm, setWarm] = useState(false);
+  const [track, setTrack] = useState("Tango for Taj");
   const mount = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -65,6 +67,11 @@ export function Crt() {
             p.setLoop(true);
             const at = p.getPlaylist()?.indexOf(FIRST) ?? -1;
             if (at > 0) p.playVideoAt(at);
+          },
+          // the label follows the album as it plays on
+          onStateChange: (e: { target: Player }) => {
+            const title = e.target.getVideoData()?.title;
+            if (title) setTrack(title);
           },
         },
       });
@@ -108,8 +115,8 @@ export function Crt() {
         </div>
         <div className="crt-panel">
           <p className="crt-label">
-            Rockstar
-            <span>A.R. Rahman · 2011 · from Tango for Taj</span>
+            {track}
+            <span>Rockstar · A.R. Rahman · 2011</span>
           </p>
           <span className="crt-knob" aria-hidden />
           <span className="crt-knob" aria-hidden />
