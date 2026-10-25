@@ -1,6 +1,7 @@
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { Marked } from "marked";
+import { parseFountain, type Element } from "./fountain";
 import { parseFrontmatter } from "./posts";
 
 /**
@@ -13,8 +14,8 @@ import { parseFrontmatter } from "./posts";
  *   date:    when the idea arrived (ISO)
  *   frame:   optional still, public/films/frames/<slug>-{960,1920}.jpg
  *
- * The body is the treatment, in `## ` sections. The concept page gives a few of them their own
- * treatment by name: "Voice-over" plays as subtitles, "The shot" as a shot card.
+ * The body is the screenplay, written in Fountain (see lib/fountain.ts). Anything after a
+ * `## Notes` line is the director's notes, in ordinary markdown.
  */
 
 export const STAGES = {
@@ -34,26 +35,11 @@ export type Film = {
   date: Date;
   place?: string;
   still?: { small: string; large: string; xl: string };
-  sections: { heading: string; html: string; lines: string[] }[];
+  script: Element[];
+  notes?: string;
 };
 
 const md = new Marked({ gfm: true });
-
-// split the body on its headings; keep each section's paragraphs too, for the subtitle reel
-function sections(body: string) {
-  return body
-    .split(/^## /m)
-    .slice(1)
-    .map((chunk) => {
-      const [heading, ...rest] = chunk.split("\n");
-      const text = rest.join("\n").trim();
-      return {
-        heading: heading.trim(),
-        html: md.parse(text, { async: false }),
-        lines: text.split(/\n{2,}/).map((l) => l.trim()).filter(Boolean),
-      };
-    });
-}
 
 const DIR = join(process.cwd(), "content/films");
 const STILLS = join(process.cwd(), "public/films/frames");
@@ -83,7 +69,10 @@ export function getFilms(): Film[] {
               xl: `/films/frames/${slug}-2880.jpg`,
             }
           : undefined,
-        sections: sections(body),
+        ...(() => {
+          const [script, notes] = body.split(/^## Notes\s*$/m);
+          return { script: parseFountain(script), notes: notes ? md.parse(notes.trim(), { async: false }) : undefined };
+        })(),
       };
     })
     .sort((a, b) => b.date.getTime() - a.date.getTime());
