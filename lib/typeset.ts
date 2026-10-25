@@ -264,7 +264,12 @@ export function typeset(root: HTMLElement): () => void {
     }
   };
 
-  document.fonts.ready.then(() => {
+  // fonts.ready can settle before a face is requested, so ask for every face the body uses
+  const family = getComputedStyle(root).fontFamily;
+  const faces = ["400", "italic 400", "600", "italic 600"].map((f) => document.fonts.load(`${f} 16px ${family}`));
+  const cap = getComputedStyle(root).getPropertyValue("--font-display").trim();
+  if (cap) faces.push(document.fonts.load(`400 16px ${cap}`));
+  Promise.all([document.fonts.ready, ...faces]).then(() => {
     if (cancelled) return;
     clearCache(); // anything measured before the web font loaded used the fallback
     paras = [...root.querySelectorAll<HTMLElement>(":scope > p")].flatMap((p) => {

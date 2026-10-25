@@ -23,7 +23,7 @@ export type Post = {
 };
 
 /** The still that gives a post its spine on the index and its opening shot on the page */
-export type Frame = { number: string; small: string; large: string; tone: string; focus: string };
+export type Frame = { number: string; small: string; large: string; xl: string; tone: string; focus: string };
 
 const FRAMES = join(process.cwd(), "public/writing/frames");
 
@@ -33,6 +33,7 @@ function frameOf(slug: string, data: Record<string, string>): Frame | undefined 
     number: data.frame,
     small: `/writing/frames/${slug}-960.jpg`,
     large: `/writing/frames/${slug}-1920.jpg`,
+    xl: `/writing/frames/${slug}-2880.jpg`,
     tone: data.tone || "#1d1a17",
     focus: data.focus || "50%",
   };

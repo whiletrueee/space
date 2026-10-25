@@ -91,13 +91,14 @@ export function fitTitle(el: HTMLElement, o: Options): () => void {
     el.classList.add("is-fit");
   };
 
-  document.fonts.ready.then(() => {
+  const s = getComputedStyle(el);
+  const font = `${s.fontStyle} ${s.fontWeight} ${REF}px ${s.fontFamily}`;
+  // fonts.ready can settle before a face this element needs has even been requested, so ask for it
+  Promise.all([document.fonts.ready, document.fonts.load(font, original)]).then(() => {
     if (cancelled) return;
     clearCache();
-    const s = getComputedStyle(el);
     const px = parseFloat(s.fontSize);
     tracking = s.letterSpacing === "normal" ? 0 : (parseFloat(s.letterSpacing) / px) * REF;
-    const font = `${s.fontStyle} ${s.fontWeight} ${REF}px ${s.fontFamily}`;
     const cache = new Map<string, number>();
     measure = (text) => {
       let w = cache.get(text);

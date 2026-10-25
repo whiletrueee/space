@@ -9,8 +9,8 @@
   --code-bg: #1d1a17;
   --code-ink: #e8e2d9;
 
-  --size: 1.125rem;
-  --lh: 1.7;
+  --size: 1.21rem;
+  --lh: 1.62;
   --measure: 36rem;
 
   position: relative;
@@ -93,10 +93,11 @@
 }
 
 .w-title {
-  font-size: clamp(2.6rem, 6.4vw, 5.25rem);
-  line-height: 0.95;
-  font-weight: 600;
-  letter-spacing: -0.05em;
+  font-family: var(--font-display), serif;
+  font-size: clamp(2.8rem, 7vw, 6rem);
+  line-height: 0.92;
+  font-weight: 400;
+  letter-spacing: -0.012em;
   text-wrap: balance;
 }
 .w-title em {
@@ -104,149 +105,287 @@
 }
 
 .w-dek {
-  font-size: clamp(1.2rem, 2vw, 1.45rem);
+  font-family: var(--font-text), serif;
+  font-size: clamp(1.25rem, 2vw, 1.5rem);
   line-height: 1.4;
-  font-weight: 300;
+  font-weight: 400;
   font-style: italic;
-  letter-spacing: -0.015em;
   color: var(--muted);
   text-wrap: pretty;
 }
 
-/* ---------- index ---------- */
+/* ---------- index: a cinema programme ---------- */
 
-.w-index {
+/* the lights go down: the index is always dark, whatever the reader's theme */
+.c-cinema {
+  --screen-ink: #f3eee6;
+  --screen-dim: rgb(243 238 230 / 0.62);
+  --screen-faint: rgb(243 238 230 / 0.38);
   flex: 1;
-  padding: clamp(5rem, 14vh, 10rem) 0 8rem;
-}
-.w-index .w-hero {
-  grid-column: full;
-  width: min(100% - 2.5rem, 78rem);
-  margin-inline: auto;
-  margin-bottom: clamp(4.5rem, 11vh, 8rem);
-}
-.w-index .w-title {
-  margin: 1.5rem 0 1.75rem;
-}
-.w-index .w-dek {
-  max-width: 34rem;
+  color: var(--screen-ink);
+  background: #050403;
 }
 
-/* the wall: every title set like a letterpress poster, each line sized to run the full width */
-.w-wall {
-  grid-column: full;
-  width: min(100% - 2.5rem, 78rem);
-  margin: 3.5rem auto 0;
-}
-.w-wall > h2 {
-  padding-bottom: 1rem;
-  border-bottom: 1px solid var(--ink);
-}
-.w-wall ol {
-  list-style: none;
-}
-.w-entry {
-  display: grid;
-  grid-template-columns: 4.25rem minmax(0, 1fr);
-  column-gap: clamp(1.25rem, 3vw, 2.75rem);
-  align-content: start;
-  padding: 2.25rem 0 2.5rem;
-  border-bottom: 1px solid var(--rule);
-  color: inherit;
-  text-decoration: none;
-}
-.w-entry > :not(.spine) {
-  grid-column: 2;
-}
-.w-entry .meta {
-  display: block;
-  margin-bottom: 1.1rem;
-}
-.w-entry .t {
-  display: block;
-  font-size: clamp(2rem, 5.5vw, 4.5rem);
-  line-height: 0.95;
-  font-weight: 600;
-  letter-spacing: -0.045em;
-  text-wrap: balance;
-}
-.w-entry .s {
-  display: block;
-  margin-top: 1.25rem;
-  max-width: 36rem;
-  font-size: 0.98rem;
-  line-height: 1.5;
-  color: var(--muted);
-  text-wrap: pretty;
-}
-/* the spine: a slice of the post's frame, like a book's spine on a shelf */
-.spine {
-  grid-column: 1;
-  grid-row: 1 / span 3;
-  position: relative;
+/* the screen: every frame stacked behind the page, one lit at a time */
+.c-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
   overflow: hidden;
-  min-height: 9rem;
+  background: #050403;
 }
-.spine img {
+.c-layer {
   position: absolute;
   inset: 0;
+  opacity: 0;
+  transition: opacity 1.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.c-layer.on {
+  opacity: 1;
+}
+.c-layer img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  filter: saturate(0.55) contrast(1.05);
-  transition:
-    object-position 1.4s cubic-bezier(0.22, 1, 0.36, 1),
-    filter 0.6s;
+  transform: scale(1.09);
+  transition: transform 16s cubic-bezier(0.2, 0, 0.2, 1);
 }
-.spine .no {
+/* each frame drifts back while it is shown, a slow pull-out from a close shot */
+.c-layer.on img {
+  transform: scale(1);
+}
+/* grade: darker in the programme so the type reads, lighter for the opening reel */
+.c-screen::after {
+  content: "";
   position: absolute;
-  bottom: 0.7rem;
-  left: 50%;
-  translate: -50% 0;
-  writing-mode: vertical-rl;
-  rotate: 180deg;
-  font-family: var(--font-geist-mono), ui-monospace, monospace;
-  font-size: 0.625rem;
-  letter-spacing: 0.2em;
-  color: #fff;
-  mix-blend-mode: difference;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 50% 45%, transparent 30%, rgb(0 0 0 / 0.55) 100%),
+    linear-gradient(to bottom, rgb(0 0 0 / 0.5), rgb(0 0 0 / 0.15) 35%, rgb(0 0 0 / 0.75));
+  transition: background-color 1.2s;
 }
-/* hovering scrubs across the frame, the way a strip of film slides through a viewer */
-.w-entry:hover .spine img {
-  object-position: 22% 50% !important;
-  filter: none;
+.is-showing .c-screen::after {
+  background-color: rgb(5 4 3 / 0.58);
+}
+/* film grain over the screen, moving, as projected film does */
+.c-screen::before {
+  content: "";
+  position: absolute;
+  inset: -50%;
+  z-index: 1;
+  opacity: 0.09;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+@media (prefers-reduced-motion: no-preference) {
+  .c-screen::before {
+    animation: grain 0.9s steps(6) infinite;
+  }
+}
+@keyframes grain {
+  0% { transform: translate(0, 0); }
+  20% { transform: translate(-6%, 4%); }
+  40% { transform: translate(5%, -7%); }
+  60% { transform: translate(-3%, 8%); }
+  80% { transform: translate(7%, 2%); }
+  100% { transform: translate(0, 0); }
 }
 @media (prefers-reduced-motion: reduce) {
-  .spine img {
-    transition: filter 0.6s;
-  }
-}
-@media (max-width: 640px) {
-  .w-entry {
-    grid-template-columns: minmax(0, 1fr);
-  }
-  .w-entry > :not(.spine) {
-    grid-column: 1;
-  }
-  .spine {
-    grid-row: auto;
-    min-height: 0;
-    height: 4.5rem;
-    margin-bottom: 1.25rem;
-  }
-  .spine .no {
-    writing-mode: horizontal-tb;
-    rotate: none;
-    left: auto;
-    right: 0.75rem;
-    bottom: 0.6rem;
-    translate: none;
+  .c-layer img,
+  .c-layer.on img {
+    transform: none;
+    transition: none;
   }
 }
 
-.w-empty {
-  grid-column: wide;
-  color: var(--muted);
+.c-hero,
+.c-programme,
+.c-credits {
+  position: relative;
+  z-index: 1;
+  width: min(100% - 2.5rem, 80rem);
+  margin-inline: auto;
+}
+
+.c-slate,
+.c-meta,
+.c-no,
+.c-cue,
+.c-credits dt {
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.6875rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+/* the opening: a full screen with the title set across it like a poster */
+.c-hero {
+  min-height: calc(100svh - 3.5rem);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto 1fr auto;
+  padding: 2rem 0 2.25rem;
+}
+.c-slate {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  color: var(--screen-dim);
+}
+.c-hero-title {
+  align-self: end;
+  padding-bottom: clamp(2rem, 7vh, 4.5rem);
+}
+.c-display {
+  display: block;
+  font-family: var(--font-display), serif;
+  font-weight: 400;
+  font-size: clamp(4rem, 14vw, 13rem);
+  line-height: 0.86;
+  letter-spacing: -0.02em;
+  text-shadow: 0 0.04em 0.4em rgb(0 0 0 / 0.25);
+}
+.c-display .fit-line {
+  line-height: 0.84;
+}
+.c-dek {
+  max-width: 31rem;
+  margin-top: clamp(1.5rem, 4vh, 2.5rem);
+  font-family: var(--font-text), serif;
+  font-size: clamp(1.15rem, 1.6vw, 1.35rem);
+  line-height: 1.45;
+  font-style: italic;
+  color: var(--screen-dim);
+}
+.c-cue {
+  color: var(--screen-faint);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .c-cue {
+    animation: cue 2.4s ease-in-out infinite;
+  }
+}
+@keyframes cue {
+  50% { opacity: 0.35; }
+}
+
+/* the programme: the piece in the middle of the screen is lit, the rest wait in the dark */
+.c-programme {
+  list-style: none;
+  padding: 12vh 0 18vh;
+}
+.c-programme li {
+  opacity: 0.26;
+  transition: opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.c-programme li.lit {
+  opacity: 1;
+}
+.c-entry {
+  display: grid;
+  grid-template-columns: 8rem minmax(0, 1fr);
+  column-gap: clamp(1.5rem, 3vw, 3rem);
+  padding: clamp(2.5rem, 7vh, 4.5rem) 0;
+  border-top: 1px solid rgb(243 238 230 / 0.14);
+  color: inherit;
+  text-decoration: none;
+}
+.c-entry > * {
+  grid-column: 2;
+}
+.c-no {
+  grid-column: 1;
+  grid-row: 1 / span 3;
+  padding-top: 0.15rem;
+  color: var(--screen-dim);
+}
+.c-meta {
+  color: var(--screen-dim);
+  margin-bottom: 1.1rem;
+}
+.c-meta .sep {
+  margin: 0 0.6em;
+  opacity: 0.5;
+}
+.c-title {
+  display: block;
+  font-family: var(--font-display), serif;
+  font-weight: 400;
+  font-size: clamp(2.4rem, 6vw, 5.5rem);
+  line-height: 0.92;
+  letter-spacing: -0.012em;
+  text-wrap: balance;
+}
+.c-summary {
+  display: block;
+  max-width: 36rem;
+  margin-top: 1.4rem;
+  font-family: var(--font-text), serif;
+  font-size: 1.15rem;
+  line-height: 1.5;
+  color: var(--screen-dim);
+  text-wrap: pretty;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .c-title .fit-line {
+    transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1) calc(var(--i) * 50ms);
+  }
+  .c-entry:hover .c-title .fit-line {
+    transform: translateX(0.75rem);
+  }
+}
+.c-entry:hover .c-title .fit-line:last-child::after {
+  content: " →";
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.35em;
+  vertical-align: middle;
+}
+.c-entry:focus-visible {
+  outline: 1px solid var(--screen-ink);
+  outline-offset: 0.75rem;
+}
+@media (max-width: 720px) {
+  .c-entry {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .c-entry > *,
+  .c-no {
+    grid-column: 1;
+    grid-row: auto;
+  }
+  .c-no {
+    margin-bottom: 0.5rem;
+  }
+  .c-slate span:nth-child(2) {
+    display: none;
+  }
+}
+
+/* end credits */
+.c-credits {
+  padding: 8vh 0 14vh;
+  text-align: center;
+}
+.c-credits dl {
+  display: grid;
+  gap: 1.35rem;
+}
+.c-credits dt {
+  color: var(--screen-faint);
+  font-size: 0.625rem;
+}
+.c-credits dd {
+  margin-top: 0.35rem;
+  font-family: var(--font-display), serif;
+  font-size: clamp(1.4rem, 2.6vw, 2rem);
+  line-height: 1.1;
+}
+.c-fin {
+  margin-top: 10vh;
+  font-family: var(--font-display), serif;
+  font-style: italic;
+  font-size: clamp(3.5rem, 9vw, 7rem);
+  line-height: 1;
 }
 
 /* lines of a fitted title; display: table shrinks the box to the text so it can be measured */
@@ -260,22 +399,6 @@
 }
 .fit-line + .fit-line {
   margin-top: 0.04em;
-}
-/* on hover the lines slide, one after another, like type being pushed along a composing stick */
-@media (prefers-reduced-motion: no-preference) {
-  .w-entry .fit-line {
-    transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1) calc(var(--i) * 45ms);
-  }
-  .w-entry:hover .fit-line {
-    transform: translateX(0.9rem);
-  }
-}
-.w-entry:hover .t {
-  color: var(--ink);
-}
-.w-entry:focus-visible {
-  outline: 1px solid var(--ink);
-  outline-offset: 0.5rem;
 }
 
 /* ---------- post ---------- */
@@ -332,9 +455,11 @@
   grid-column: full;
   display: grid;
   grid-template-columns: subgrid;
+  font-family: var(--font-text), serif;
   font-size: var(--size);
   line-height: var(--lh);
   font-weight: 400;
+  font-optical-sizing: auto;
   hanging-punctuation: first;
 }
 .prose > * {
@@ -382,10 +507,10 @@
   /* any vertical margin would make the float taller than three lines; nudge with a transform instead */
   margin: 0 0.14em 0 -0.03em;
   transform: translateY(0.04em);
-  font-size: calc(var(--size) * 5.6);
-  line-height: 0.8;
-  font-weight: 600;
-  letter-spacing: -0.04em;
+  font-family: var(--font-display), serif;
+  font-size: calc(var(--size) * 5.4);
+  line-height: 0.82;
+  font-weight: 400;
 }
 
 .sr-only {
@@ -409,8 +534,11 @@
 .prose h2 {
   counter-increment: section;
   margin-top: 4rem;
-  font-size: 1.65rem;
-  font-weight: 600;
+  font-family: var(--font-display), serif;
+  font-size: 2.35rem;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  line-height: 1.05;
 }
 .prose h2::before {
   content: counter(section, decimal-leading-zero);
@@ -478,11 +606,11 @@
 }
 .prose blockquote p {
   margin: 0;
-  font-size: clamp(1.4rem, 2.6vw, 1.95rem);
-  line-height: 1.3;
-  font-weight: 300;
+  font-family: var(--font-display), serif;
+  font-size: clamp(1.8rem, 3.4vw, 2.6rem);
+  line-height: 1.12;
+  font-weight: 400;
   font-style: italic;
-  letter-spacing: -0.025em;
   text-wrap: balance;
 }
 
@@ -590,10 +718,10 @@
 .w-next .t {
   display: block;
   margin-top: 0.7rem;
-  font-size: 1.2rem;
-  font-weight: 550;
-  letter-spacing: -0.03em;
-  line-height: 1.2;
+  font-family: var(--font-display), serif;
+  font-size: 1.7rem;
+  font-weight: 400;
+  line-height: 1.08;
   text-wrap: balance;
   transition: color 0.2s;
 }

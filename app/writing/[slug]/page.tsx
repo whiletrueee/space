@@ -48,7 +48,7 @@ export default async function PostPage({ params }: PageProps<"/writing/[slug]">)
           {/* eslint-disable-next-line @next/next/no-img-element -- static export, no optimizer */}
           <img
             src={post.frame.large}
-            srcSet={`${post.frame.small} 960w, ${post.frame.large} 1920w`}
+            srcSet={`${post.frame.small} 960w, ${post.frame.large} 1920w, ${post.frame.xl} 2880w`}
             sizes="100vw"
             alt=""
             fetchPriority="high"
