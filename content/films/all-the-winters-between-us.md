@@ -20,7 +20,7 @@ And among those, the ones that hurt the most are the small ones. The ones you bo
 
 MONTAGE - A YEAR OF WEATHER
 
-Every month, a different state of India, chosen for the way it looks in that season. Salt flats, then desert, then tea, then monsoon, then mist, then snow. The weather changes. The two of them change with it.
+Every month, a different state of India, chosen for the way it looks in that season. A frozen river, then blossom, then monsoon, then cloud, then festival light, then snow. The weather changes. The two of them change with it.
 
 INT. A GYM - ANY MONTH - NIGHT
 
@@ -45,20 +45,22 @@ FADE OUT.
 
 **The heart.** The dreams two people see together, and the small ones most of all: the ones both knew were achievable, that do get achieved, after the two of them are no longer together.
 
-**A first map of the year.** These are placeholders, chosen for when each place is at its most itself, and every one is open:
+**The year, month by month.** Twelve places, each chosen for the one month it looks like nowhere else, and for what that season can carry in the story. The story is written to the places, not the other way round. All of it is open.
 
-| Month | Where | The weather |
-| --- | --- | --- |
-| January | Delhi | Fog at dawn, gold light by noon |
-| February | Rann of Kutch, Gujarat | White salt under a winter moon |
-| March | Jaisalmer, Rajasthan | Desert spring, the last cool nights |
-| April | Darjeeling, West Bengal | First-flush tea, mist on the slopes |
-| May | Ladakh | High desert, the passes opening |
-| June | Kerala | The monsoon arriving on the first of the month |
-| July | Meghalaya | The wettest place on earth, living root bridges |
-| August | Valley of Flowers, Uttarakhand | Rain and wildflowers |
-| September | Kaas Plateau, Maharashtra | The flowers after the rain |
-| October | Kolkata, West Bengal | Durga Puja: the whole city lit, drums all night |
-| November | Hampi, Karnataka | Boulders and ruins in the first cool weeks |
-| December | Gulmarg, Kashmir | Deep snow |
-| January | Delhi | The same fog |
+| Month | Where | The image | What the season can carry |
+| --- | --- | --- | --- |
+| January | Delhi, Sunder Nursery and Lodhi Garden | Fog swallowing the domes at dawn, breath in the air, tea from a kulhad | The promise, made small enough to keep |
+| February | Zanskar, Ladakh | The Chadar: a frozen river you walk on, ice groaning under your feet | Trust. Walking on something that could crack |
+| March | Hampi, Karnataka | Boulder fields gold at sunrise, a round coracle turning on the Tungabhadra | Play, and the small dreams, planned out loud |
+| April | Garkone, Kargil | Apricot blossom, white and pink, against bare brown mountains | Something fragile flowering in a hard place |
+| May | Yumthang Valley, North Sikkim | Rhododendrons red across the valley, snow still on the peaks | The high point. The most in love they will ever be |
+| June | Mumbai | The first monsoon on the Art Deco seafront, Bandra's old lanes in the rain, an Irani café with steamed windows | The city pulls them apart: work, distance, the missed call |
+| July | Nongriat, Meghalaya | Living root bridges in cloud, rain for weeks | What holds when it will not stop raining, and what doesn't |
+| August | Valley of Flowers, Uttarakhand | Wildflowers in the rain, a trail for one | The first trip one of them takes alone |
+| September | Ziro Valley, Arunachal Pradesh | Green and gold paddies, pine hills, a music festival in the fields | Noise, new people, the beginning of moving on |
+| October | Kolkata, West Bengal | Durga Puja: the whole city lit, drums all night | The crowd where you think you see them |
+| November | Shillong, Meghalaya | Cherry blossom in autumn, pink in the wrong season | Something blooming too late |
+| December | Kalpa, Kinnaur | First snow on the apple orchards, the peaks pink at dawn | Quiet. The year closing. The dream achieved, alone |
+| January | Delhi, Sunder Nursery and Lodhi Garden | The same fog | The same bench, a year later |
+
+**Kept in reserve.** Flamingos on the Sewri mudflats in Mumbai, thousands of them in front of the cranes and the port, for a winter or spring scene in the city. Gurez, a valley on the Line of Control, for a Kashmir that nobody has filmed to death.
