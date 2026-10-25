@@ -6,8 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint",
-    "deploy": "./deploy/deploy.sh"
+    "lint": "eslint"
   },
   "dependencies": {
     "@chenglou/pretext": "1.0.0",

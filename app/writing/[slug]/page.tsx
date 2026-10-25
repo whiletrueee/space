@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { formatDate, formatTime, getPost, getPosts, SITE } from "@/lib/posts";
+import { FitTitle } from "../fit-title";
 import { Prose } from "../prose";
 
 export const dynamicParams = false;
@@ -54,7 +55,7 @@ export default async function PostPage({ params }: PageProps<"/writing/[slug]">)
           <span className="sep">·</span>
           {post.minutes} min read
         </p>
-        <h1 className="w-title">{post.title}</h1>
+        <FitTitle as="h1" text={post.title} className="w-title" target={0.11} min={34} maxRatio={0.2} />
         <p className="w-dek">{post.summary}</p>
       </header>
 

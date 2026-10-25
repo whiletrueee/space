@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { formatDate, getPosts, yearOf } from "@/lib/posts";
+import { FitTitle } from "./fit-title";
 
 export const metadata: Metadata = {
   title: "Writing — whiletrueee",
   description: "Engineering, written while it happened.",
-  alternates: { types: { "application/rss+xml": "/writing/rss.xml" } },
 };
 
 export default function WritingIndex() {
@@ -31,24 +31,22 @@ export default function WritingIndex() {
       {posts.length === 0 && <p className="w-empty">Nothing here yet.</p>}
 
       {years.map((year) => (
-        <section key={year} className="w-year">
-          <h2>{year}</h2>
+        <section key={year} className="w-wall">
+          <h2 className="w-kicker">{year}</h2>
           <ol>
             {posts
               .filter((p) => yearOf(p.date) === year)
               .map((p) => (
                 <li key={p.slug}>
-                  <Link href={`/writing/${p.slug}/`} className="w-row">
-                    <time dateTime={p.date.toISOString()}>{formatDate(p.date).replace(/ \d{4}$/, "")}</time>
-                    <span>
-                      <span className="t">
-                        {p.title}
-                        {p.draft && " (draft)"}
-                        <span className="arrow">→</span>
-                      </span>
-                      <span className="s">{p.summary}</span>
+                  <Link href={`/writing/${p.slug}/`} className="w-entry">
+                    <span className="w-kicker meta">
+                      <time dateTime={p.date.toISOString()}>{formatDate(p.date).replace(/ \d{4}$/, "")}</time>
+                      <span className="sep">·</span>
+                      {p.minutes} min
+                      {p.draft && <span className="sep">· draft</span>}
                     </span>
-                    <span className="min">{p.minutes} min</span>
+                    <FitTitle text={p.title} className="t" />
+                    <span className="s">{p.summary}</span>
                   </Link>
                 </li>
               ))}

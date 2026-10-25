@@ -7,16 +7,21 @@ import { clearCache, prepareWithSegments } from "@chenglou/pretext";
  * the browser only stretches the spaces and never re-wraps.
  *
  * Paragraphs that hold anything but text and simple inline tags are left to CSS.
+ *
+ * The last long paragraph is set as a cul-de-lampe: each line a little narrower than the one
+ * above, centred, so the piece tapers to a point the way old books closed a chapter.
  */
 
 type Seg = { type: "box" | "glue" | "break"; w: number; text: string; item: number };
 type Item = { text: string; font: string; chain: Element[] };
-type Para = { p: HTMLElement; items: Item[]; segs: Seg[]; original: Node[]; lead: HTMLElement[] };
+type Para = { p: HTMLElement; items: Item[]; segs: Seg[]; original: Node[]; lead: HTMLElement[]; shape?: "taper" | "tail" };
 
 const INLINE = new Set(["A", "ABBR", "B", "CITE", "CODE", "EM", "I", "KBD", "MARK", "Q", "S", "SMALL", "STRONG"]);
 const DROPCAP_LINES = 3;
 const JUSTIFY_MIN_WIDTH = 480; // narrower than this, lines stay ragged-right
 const LOOSEST = 3; // first pass rejects lines stretched past this ratio
+const TAPER_MIN_WORDS = 30; // shorter than this, a paragraph has too few lines to make a shape
+const TAPER_FLOOR = 0.22; // the width of the last tapered line, as a fraction of the measure
 
 const fontOf = (el: Element) => {
   const s = getComputedStyle(el);
@@ -85,6 +90,7 @@ function breakLines(
   widthAt: (line: number) => number,
   loosest: number,
   justify: boolean,
+  distinct = DROPCAP_LINES, // lines past this all share one width, so nodes beyond it can be merged
 ): [number, number][] | null {
   const n = segs.length;
   const W = [0], Y = [0], Z = [0];
@@ -118,7 +124,7 @@ function breakLines(
       const badness = Math.min(100 * Math.abs(r) ** 3, 1e7);
       const dem = a.dem + (10 + badness) ** 2 + (segs[j]?.type === "break" ? 2500 : 0);
       // widths only differ for the first few lines, so that is all a node needs to remember
-      const key = Math.min(a.line + 1, DROPCAP_LINES);
+      const key = Math.min(a.line + 1, distinct);
       const cur = best.get(key);
       if (!cur || dem < cur.dem) best.set(key, { pos: j, start: j + 1, line: a.line + 1, dem, prev: a });
     }
@@ -135,9 +141,11 @@ function breakLines(
 
 function paint(para: Para, lines: [number, number][], justify: boolean, widthAt: (line: number) => number) {
   const { segs, items } = para;
+  const taper = para.shape === "taper";
   const out = lines.map(([from, to], li) => {
     const line = document.createElement("span");
     line.className = justify && li < lines.length - 1 ? "tl tl-justify" : "tl";
+    if (taper) line.style.width = `${widthAt(li)}px`;
     let i = from, end = to;
     while (i < end && segs[i].type === "glue") i++;
     while (end > i && segs[end - 1].type === "glue") end--;
@@ -185,6 +193,42 @@ function addDropcap(para: Para) {
   para.lead = [sr, dc];
 }
 
+// For each line count, widths curve from the full measure down to the floor; the count whose
+// last line comes out fullest wins, so the shape closes on a point instead of trailing off
+function taperLines(segs: Seg[], width: number) {
+  let best: { lines: [number, number][]; widthAt: (line: number) => number; score: number } | null = null;
+  for (let n = 4; n <= 24; n++) {
+    const widthAt = (line: number) =>
+      Math.floor(width * (1 - (1 - TAPER_FLOOR) * Math.min(1, line / (n - 1)) ** 1.3)) - 1;
+    const lines =
+      breakLines(segs, widthAt, LOOSEST, true, Infinity) ?? breakLines(segs, widthAt, Infinity, true, Infinity);
+    // the last line costs nothing in Knuth-Plass, so it may end the paragraph early and leave a stub
+    if (!lines || lines.length > n || lines.length < 3) continue;
+    const [from, to] = lines.at(-1)!;
+    let natural = 0;
+    for (let k = from; k < to; k++) natural += segs[k].w;
+    const score = Math.abs(1 - natural / widthAt(lines.length - 1)) + (n - lines.length) * 0.5;
+    if (!best || score < best.score) best = { lines, widthAt, score };
+  }
+  return best;
+}
+
+// The closing paragraph tapers; a short sign-off line after it sits centred under the point
+function shapeEnding(paras: Para[], root: HTMLElement) {
+  const words = (p: Para) => p.items.reduce((n, i) => n + i.text.split(/\s+/).filter(Boolean).length, 0);
+  const last = paras.at(-1);
+  if (!last || last.p !== root.lastElementChild) return;
+  if (words(last) >= TAPER_MIN_WORDS) {
+    last.shape = "taper";
+    return;
+  }
+  const prev = paras.at(-2);
+  if (prev && prev.p === last.p.previousElementSibling && words(prev) >= TAPER_MIN_WORDS && !prev.lead.length) {
+    prev.shape = "taper";
+    last.shape = "tail";
+  }
+}
+
 /** Typesets every top-level paragraph in `root`. Returns a cleanup that restores the original DOM. */
 export function typeset(root: HTMLElement): () => void {
   let cancelled = false;
@@ -199,6 +243,16 @@ export function typeset(root: HTMLElement): () => void {
     const justify = width >= JUSTIFY_MIN_WIDTH;
     for (const para of paras) {
       // the drop cap is painted first so its real width can be measured
+      para.p.classList.toggle("is-taper", justify && para.shape === "taper");
+      para.p.classList.toggle("is-tail", justify && para.shape === "tail");
+      if (justify && para.shape === "taper") {
+        const shaped = taperLines(para.segs, width);
+        if (shaped) {
+          paint(para, shaped.lines, true, shaped.widthAt);
+          continue;
+        }
+        para.p.classList.remove("is-taper");
+      }
       const dc = para.lead[1];
       if (dc) para.p.replaceChildren(...para.lead);
       const dcWidth = dc ? dc.getBoundingClientRect().width + parseFloat(getComputedStyle(dc).marginRight) : 0;
@@ -220,6 +274,7 @@ export function typeset(root: HTMLElement): () => void {
     });
     const opener = root.firstElementChild;
     if (root.classList.contains("has-dropcap") && paras[0] && paras[0].p === opener) addDropcap(paras[0]);
+    shapeEnding(paras, root);
     for (const para of paras) para.segs = segment(para.items);
     run();
     root.classList.add("is-set");
@@ -234,7 +289,10 @@ export function typeset(root: HTMLElement): () => void {
   return () => {
     cancelled = true;
     observer?.disconnect();
-    for (const para of paras) para.p.replaceChildren(...para.original);
+    for (const para of paras) {
+      para.p.replaceChildren(...para.original);
+      para.p.classList.remove("is-taper", "is-tail");
+    }
     root.classList.remove("is-set");
   };
 }

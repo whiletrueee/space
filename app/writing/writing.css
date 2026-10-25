@@ -120,7 +120,9 @@
   padding: clamp(5rem, 14vh, 10rem) 0 8rem;
 }
 .w-index .w-hero {
-  grid-column: wide;
+  grid-column: full;
+  width: min(100% - 2.5rem, 78rem);
+  margin-inline: auto;
   margin-bottom: clamp(4.5rem, 11vh, 8rem);
 }
 .w-index .w-title {
@@ -130,94 +132,79 @@
   max-width: 34rem;
 }
 
-.w-year {
-  grid-column: wide;
-  display: grid;
-  grid-template-columns: 7rem 1fr;
-  margin-top: 3.5rem;
+/* the wall: every title set like a letterpress poster, each line sized to run the full width */
+.w-wall {
+  grid-column: full;
+  width: min(100% - 2.5rem, 78rem);
+  margin: 3.5rem auto 0;
 }
-.w-year > h2 {
-  font-family: var(--font-geist-mono), ui-monospace, monospace;
-  font-size: 0.6875rem;
-  letter-spacing: 0.16em;
-  color: var(--muted);
-  padding-top: 1.85rem;
+.w-wall > h2 {
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--ink);
 }
-.w-year ol {
+.w-wall ol {
   list-style: none;
-  border-top: 1px solid var(--ink);
 }
-.w-row {
-  display: grid;
-  grid-template-columns: 5.5rem 1fr auto;
-  column-gap: 1.25rem;
-  padding: 1.6rem 0 1.75rem;
+.w-entry {
+  display: block;
+  padding: 2.25rem 0 2.5rem;
   border-bottom: 1px solid var(--rule);
   color: inherit;
   text-decoration: none;
 }
-.w-row time,
-.w-row .min {
-  font-family: var(--font-geist-mono), ui-monospace, monospace;
-  font-size: 0.6875rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--muted);
-  padding-top: 0.6rem;
-}
-.w-row .t {
+.w-entry .meta {
   display: block;
-  font-size: clamp(1.35rem, 2.4vw, 1.9rem);
-  line-height: 1.12;
-  font-weight: 550;
-  letter-spacing: -0.035em;
+  margin-bottom: 1.1rem;
+}
+.w-entry .t {
+  display: block;
+  font-size: clamp(2rem, 5.5vw, 4.5rem);
+  line-height: 0.95;
+  font-weight: 600;
+  letter-spacing: -0.045em;
   text-wrap: balance;
-  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
 }
-.w-row .s {
+.w-entry .s {
   display: block;
-  margin-top: 0.55rem;
-  max-width: 34rem;
+  margin-top: 1.25rem;
+  max-width: 36rem;
   font-size: 0.98rem;
   line-height: 1.5;
   color: var(--muted);
   text-wrap: pretty;
-}
-.w-row:hover .t {
-  transform: translateX(0.4rem);
-}
-.w-row .arrow {
-  display: inline-block;
-  margin-left: 0.4rem;
-  opacity: 0;
-  transition: opacity 0.3s, transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
-}
-.w-row:hover .arrow {
-  opacity: 1;
-  transform: translateX(0.25rem);
 }
 .w-empty {
   grid-column: wide;
   color: var(--muted);
 }
 
-@media (max-width: 640px) {
-  .w-year {
-    grid-template-columns: 1fr;
+/* lines of a fitted title; display: table shrinks the box to the text so it can be measured */
+.fit.is-fit {
+  text-wrap: nowrap;
+}
+.fit-line {
+  display: table;
+  white-space: nowrap;
+  line-height: 0.9;
+}
+.fit-line + .fit-line {
+  margin-top: 0.04em;
+}
+/* on hover the lines slide, one after another, like type being pushed along a composing stick */
+@media (prefers-reduced-motion: no-preference) {
+  .w-entry .fit-line {
+    transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1) calc(var(--i) * 45ms);
   }
-  .w-year > h2 {
-    padding: 0 0 0.75rem;
+  .w-entry:hover .fit-line {
+    transform: translateX(0.9rem);
   }
-  .w-row {
-    grid-template-columns: 1fr auto;
-  }
-  .w-row time {
-    grid-column: 1 / -1;
-    padding: 0 0 0.5rem;
-  }
-  .w-row .min {
-    display: none;
-  }
+}
+.w-entry:hover .t {
+  color: var(--ink);
+}
+.w-entry:focus-visible {
+  outline: 1px solid var(--ink);
+  outline-offset: 0.5rem;
 }
 
 /* ---------- post ---------- */
@@ -267,6 +254,20 @@
 .prose .tl-justify {
   text-align: justify;
   text-align-last: justify;
+}
+
+/* cul-de-lampe: the closing paragraph narrows line by line to a point */
+.prose .is-taper .tl {
+  margin-inline: auto;
+}
+.prose .is-taper .tl:last-child,
+.prose .is-tail {
+  text-align: center;
+}
+.prose .is-tail {
+  margin-top: 1.6em;
+  color: var(--muted);
+  font-style: italic;
 }
 
 /* drop cap: exactly three lines tall, so the fourth line runs full width */
@@ -463,6 +464,7 @@
   margin-top: 1.15em;
   font-size: var(--size);
   line-height: var(--lh);
+  text-align: center;
   color: var(--ink);
 }
 .w-next {
