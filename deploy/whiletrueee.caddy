@@ -1,0 +1,25 @@
+# whiletrueee.com — static export of this repo, served from the VPS behind Cloudflare.
+# Import from /etc/caddy/Caddyfile. TLS uses a Cloudflare Origin CA cert (zone SSL: Full strict).
+
+www.whiletrueee.com {
+	tls /etc/caddy/certs/whiletrueee.pem /etc/caddy/certs/whiletrueee.key
+	redir https://whiletrueee.com{uri} permanent
+}
+
+whiletrueee.com {
+	tls /etc/caddy/certs/whiletrueee.pem /etc/caddy/certs/whiletrueee.key
+	root * /var/www/whiletrueee
+	encode zstd gzip
+
+	# hashed build assets never change; pages always revalidate
+	header /_next/static/* Cache-Control "public, max-age=31536000, immutable"
+	header /writing/rss.xml Content-Type "application/rss+xml; charset=utf-8"
+
+	try_files {path} {path}/index.html
+	file_server
+
+	handle_errors 404 {
+		rewrite * /404.html
+		file_server
+	}
+}

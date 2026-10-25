@@ -1,12 +1,6 @@
 import Link from "next/link";
 import { HeroImage } from "./hero-image";
-
-const nav = [
-  { label: "Work", href: "/work" },
-  { label: "Films", href: "/films" },
-  { label: "Places", href: "/places" },
-  { label: "About", href: "/about" },
-];
+import { bar, nav } from "./site";
 
 const lines = [
   <>Some are made with code.</>,
@@ -33,9 +27,6 @@ const projects = [
     href: "https://www.headout.com",
   },
 ];
-
-const bar =
-  "shrink-0 bg-black px-5 font-mono text-[10px] tracking-[0.14em] text-white/55 uppercase sm:px-10 sm:text-[11px] sm:tracking-[0.18em] lg:px-14";
 
 export default function Home() {
   return (
