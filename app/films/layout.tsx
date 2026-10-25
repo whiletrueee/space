@@ -1,5 +1,6 @@
 import { Courier_Prime } from "next/font/google";
 import { Chrome } from "../chrome";
+import { Desk } from "./desk";
 import "../writing/writing.css";
 import "./films.css";
 
@@ -9,7 +10,10 @@ const script = Courier_Prime({ weight: ["400", "700"], style: ["normal", "italic
 export default function FilmsLayout({ children }: LayoutProps<"/films">) {
   return (
     <Chrome active="Films">
-      <div className={`sp-root ${script.variable}`}>{children}</div>
+      <div className={`sp-root ${script.variable}`}>
+        <Desk />
+        {children}
+      </div>
     </Chrome>
   );
 }

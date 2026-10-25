@@ -171,7 +171,7 @@
 .sp-entry {
   position: relative;
 }
-.sp-tone {
+.sp-paren.sp-tone {
   margin-top: 1lh;
   margin-left: 0;
   max-width: none;
@@ -310,5 +310,174 @@
   }
   .sp-legend div {
     grid-template-columns: 11ch 1fr;
+  }
+}
+
+/* ---------- the desk at night, behind the paper ---------- */
+
+.sp-root {
+  position: relative;
+  isolation: isolate;
+  overflow-x: clip;
+}
+.sp-desk {
+  position: relative;
+  z-index: 1;
+}
+.sd-desk {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  /* the wood of the desk, barely there */
+  background:
+    radial-gradient(ellipse at 30% 20%, #3a322a 0%, transparent 60%),
+    repeating-linear-gradient(92deg, rgb(255 255 255 / 0.012) 0 2px, transparent 2px 9px),
+    var(--desk);
+}
+/* the lamp: a warm pool of light, top left, breathing very slightly */
+.sd-lamp {
+  position: absolute;
+  inset: -20%;
+  background: radial-gradient(circle at 28% 22%, rgb(255 196 120 / 0.22), rgb(255 170 90 / 0.06) 35%, transparent 60%);
+  animation: lamp 7s ease-in-out infinite alternate;
+}
+/* streetlight through the blinds: soft slats, slanted, drifting a few pixels as if the blind sways */
+.sd-blinds {
+  position: absolute;
+  inset: -40%;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgb(255 190 110 / 0.085) 0 38px,
+    rgb(255 190 110 / 0.03) 46px,
+    transparent 54px 96px
+  );
+  rotate: -14deg;
+  filter: blur(2.5px);
+  mask-image: radial-gradient(ellipse at 70% 35%, #000 10%, transparent 65%);
+  animation: sway 18s ease-in-out infinite alternate;
+}
+/* a car passes in the street below: its light crosses the blinds and is gone */
+.sd-headlights {
+  position: absolute;
+  inset: -40%;
+  background: repeating-linear-gradient(to bottom, rgb(255 236 200 / 0.16) 0 30px, transparent 44px 96px);
+  rotate: -14deg;
+  filter: blur(4px);
+  mask-image: linear-gradient(to right, transparent 0 40%, #000 47%, #000 53%, transparent 60% 100%);
+  mask-size: 300% 100%;
+  opacity: 0;
+  animation: headlights 23s cubic-bezier(0.45, 0, 0.55, 1) infinite 4s;
+}
+.sd-dust {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  mix-blend-mode: screen;
+}
+
+/* two strips of film lying beside the script, running slowly as if through a gate */
+.sd-strip {
+  position: absolute;
+  top: -10%;
+  bottom: -10%;
+  width: 8.5rem;
+  padding: 0 1.35rem;
+  background: #0d0b09;
+  box-shadow: 0 1rem 2.5rem rgb(0 0 0 / 0.55);
+  overflow: hidden;
+  opacity: 0.55;
+}
+/* sprocket holes down both edges */
+.sd-strip::before,
+.sd-strip::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 0.6rem;
+  background: repeating-linear-gradient(to bottom, transparent 0 0.55rem, rgb(243 238 230 / 0.55) 0.55rem 1.15rem, transparent 1.15rem 1.5rem);
+  border-radius: 1px;
+  z-index: 1;
+}
+.sd-strip::before {
+  left: 0.38rem;
+}
+.sd-strip::after {
+  right: 0.38rem;
+}
+.sd-strip.left {
+  left: max(1.5rem, calc(50% - 85ch / 2 - 15rem));
+  rotate: -4deg;
+}
+.sd-strip.right {
+  right: max(1.5rem, calc(50% - 85ch / 2 - 15rem));
+  rotate: 3deg;
+}
+.sd-reel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  animation: reel 120s linear infinite;
+}
+.sd-strip.right .sd-reel {
+  animation-direction: reverse;
+  animation-duration: 140s;
+}
+.sd-reel img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+  filter: saturate(0.7) sepia(0.15) brightness(0.85);
+}
+/* only where there is room for them beside the page */
+@media (max-width: 1240px) {
+  .sd-strip {
+    display: none;
+  }
+}
+
+@keyframes lamp {
+  to {
+    opacity: 0.82;
+  }
+}
+@keyframes sway {
+  to {
+    translate: 0 12px;
+  }
+}
+@keyframes headlights {
+  0%,
+  62% {
+    opacity: 0;
+    mask-position: 100% 0;
+  }
+  66% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 1;
+  }
+  86%,
+  100% {
+    opacity: 0;
+    mask-position: 0% 0;
+  }
+}
+@keyframes reel {
+  to {
+    translate: 0 -50%;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sd-lamp,
+  .sd-blinds,
+  .sd-headlights,
+  .sd-reel {
+    animation: none;
   }
 }
