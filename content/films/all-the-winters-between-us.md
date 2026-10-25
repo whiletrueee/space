@@ -58,7 +58,7 @@ FADE OUT.
 | July | Meghalaya | The wettest place on earth, living root bridges |
 | August | Valley of Flowers, Uttarakhand | Rain and wildflowers |
 | September | Kaas Plateau, Maharashtra | The flowers after the rain |
-| October | Kolkata, West Bengal | Autumn, and the city lit for the festival |
+| October | Spiti Valley, Himachal Pradesh | Gold poplars and the first frost |
 | November | Hampi, Karnataka | Boulders and ruins in the first cool weeks |
 | December | Gulmarg, Kashmir | Deep snow |
 | January | Delhi | The same fog |
