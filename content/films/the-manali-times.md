@@ -1,8 +1,8 @@
 ---
 title: The Manali Times
-logline: Three friends who were strangers in first year now share a flat in Bangalore. As one long night winds down, the one who steps out to walk someone home sees the city before sunrise, and tries to stop time the only way he knows, by taking a picture of the mess.
+logline: The party never really stops. You're either in it, or you're the one walking back from it.
 status: spark
-tone: Bangalore after the party. Banter, faces, a city taking out its trash before sunrise.
+tone: 3:12 a.m. The music gives up before we do.
 date: 2026-10-25T09:00:00+05:30
 place: Bangalore
 ---
