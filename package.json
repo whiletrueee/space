@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "editor": "node tools/editor/judge.ts"
   },
   "dependencies": {
     "@chenglou/pretext": "1.0.0",

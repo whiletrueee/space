@@ -42,3 +42,4 @@ next-env.d.ts
 
 # writing drafts never get committed
 /content/drafts/
+/tools/editor/reports/

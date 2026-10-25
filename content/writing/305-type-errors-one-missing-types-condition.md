@@ -1,46 +1,23 @@
 ---
-title: 305 type errors were one missing types condition
+title: 305 type errors from one missing line in a dependency
 date: 2026-08-02T20:17:00+05:30
-summary: Switching TypeScript to bundler module resolution turned a clean type-check into 305 errors across 52 files. The cause was one transitive dependency whose exports map had no types entry.
+summary: Switching TypeScript to bundler module resolution turned a clean type-check into 305 errors across 52 files. All of them came from one transitive dependency with no types entry in its exports map. Here is how to find yours in a minute.
 frame: 024
 tone: "#9e9d9d"
 focus: 72%
 ---
 
-One line in a dependency's `package.json` produced 305 TypeScript errors across 52 files in our codebase, and it had been sitting there harmlessly for years. It only went off when the compiler started reading export maps.
+Every package that has been type-checking fine only because TypeScript ignored its exports map is a latent error in your project. Switch `moduleResolution` to `bundler`, and they all go off at once, multiplied by every file that infers a type through them. Next.js 16 makes that switch for you on the next build, with no opt-out, because Turbopack resolves modules the way a bundler does and `tsc` has to agree with it.
 
-I was moving a large Next.js dashboard onto Next 16. The type-check was clean. Then I ran a production build and Next printed this:
+On a large Next.js app with a clean type-check, that switch produced 305 errors across 52 files. One line in one dependency, two levels down, caused every one of them.
 
-```
-We detected TypeScript ... reconfigured your tsconfig.json for you.
-  - moduleResolution was set to bundler
-```
+## Two resolvers, two rules
 
-It doesn't ask, and there is no opt-out. Turbopack resolves modules the way a bundler does, so Next makes `tsc` resolve them the same way. That is reasonable. The previous big upgrade, to Next 15, had left our `tsconfig.json` untouched, so this was the first time the app had been type-checked under anything but the old `node` resolution.
+Under `moduleResolution: "node"`, TypeScript ignores `exports` entirely. It walks the package directory the old way, finds an `index.d.ts` at the root, and types everything. The exports map might as well not be there.
 
-Re-ran the type-check: 305 errors, 52 files.
+Under `bundler`, and under `node16` and `nodenext`, TypeScript obeys `exports`. If a package has an exports map, the map is the only way in. TypeScript looks for a `types` condition, and if there isn't one, it looks for a declaration file next to whichever JS file the map points at. If that file doesn't exist either, the package has no types at all, even when its declarations are sitting at the root, because nothing in the map leads to them.
 
-## The wrong conclusion was right there
-
-I grouped the errors. 93 were "property does not exist," 83 were "is of type `unknown`." A wall of `unknown` is what it looks like when type inference silently collapses somewhere upstream and everything downstream inherits the hole.
-
-Then the file list: 48 of the 52 files imported jotai, our old state library, still on 1.x. So the obvious write-up was "jotai 1 doesn't survive bundler resolution, migrate to v2." That is a breaking, 48-file migration across most of the app. I almost wrote the ticket.
-
-## Trace one value
-
-Instead I picked a single error and followed it.
-
-```ts
-const details = useAtomValue(detailsAtom); // unknown
-```
-
-The atom was a focused atom:
-
-```ts
-const detailsAtom = focusAtom(formDataAtom, (o) => o.prop("details"));
-```
-
-`focusAtom` comes from `jotai/optics`, and its return type is computed through a separate library, `optics-ts`. So I opened `optics-ts@2.3.0`'s `package.json`:
+Here is the map that did it, from `optics-ts@2.3.0`:
 
 ```jsonc
 "exports": {
@@ -51,61 +28,34 @@ const detailsAtom = focusAtom(formDataAtom, (o) => o.prop("details"));
 }
 ```
 
-No `types` condition.
+No `types` condition, and no `.d.ts` beside `./dist/mjs/index.js`.
 
-## Why it worked for years
+## Why the count points the wrong way
 
-Under `moduleResolution: "node"`, TypeScript ignores `exports` entirely. It walks the package directory the old way, finds `index.d.ts` at the package root, and everything types fine. The exports map might as well not exist.
+The errors didn't mention `optics-ts`. 93 said "property does not exist" and 83 said "is of type `unknown`". 48 of the 52 files imported the state library that used `optics-ts` internally, which pointed straight at a 48-file migration to its next major version. That would have been a breaking change across most of the app, and it would not have fixed anything.
 
-Under `"bundler"` (and `"node16"`/`"nodenext"`), TypeScript obeys `exports`. If a package has an exports map, that map is the only way in. It looks for a `types` condition. Without one, it takes the JS target it matched and looks for a declaration file next to it, `./dist/mjs/index.d.ts`. Nothing there. The declarations at the root are now unreachable, because the exports map doesn't point at them.
+A wall of `unknown` means inference collapsed somewhere upstream and everything downstream inherited the hole. The chain here was four steps long:
 
-So the chain went:
-
-1. `optics-ts` resolves to no types, so it's implicitly `any`.
-2. `focusAtom` can't infer its optic, so every focused atom becomes `Atom<unknown>`.
+1. `optics-ts` resolves to no types, so it becomes `any`.
+2. The library's `focusAtom` can't infer its optic, so every focused atom is `Atom<unknown>`.
 3. Every component reading one of those atoms gets `unknown`.
-4. Every property access on `unknown` is an error. 305 of them.
+4. Every property access on `unknown` is an error.
 
-It was never jotai. It was one transitive dependency two levels down with a gap in its export map, invisible for as long as the resolver didn't read export maps.
+The files with the most errors are the ones furthest from the cause. The error count measures how far the hole spread, not how many problems you have.
 
-## The fix
+> It's almost never 48 problems. It's one problem wearing 48 coats.
 
-The `optics-ts` 2.4.1 changelog: added `"types"` to exports. One line in `resolutions`:
+The fix was a patch release. `optics-ts` 2.4.1 added `"types"` to its exports, one line in `resolutions` pinned it, and 305 errors became 4. Those 4 were the same rule in a smaller form: deep imports into package internals, like `react-hook-form/dist/types/form`, that bundler resolution blocks because they aren't in the exports map. Every one of those types was already re-exported from the package root.
 
-```json
-"resolutions": {
-  "optics-ts": "2.4.1"
-}
-```
+## Find yours before the switch
 
-305 to 4.
+Three checks, in the order I would run them now.
 
-The 4 leftovers were the same disease in cheaper clothes: deep imports into package internals that bundler resolution blocks because they're not in the exports map.
-
-```ts
-// blocked: not exported
-import type { UseFormReturn } from "react-hook-form/dist/types/form";
-// fine: the package root re-exports it
-import type { UseFormReturn } from "react-hook-form";
-```
-
-One `react-hook-form` import and three `react-select/dist/declarations/*` imports. Every one of those types was already re-exported from the package root. Point at the front door instead of climbing in through `dist`. Clean.
-
-## What I'd run first next time
-
-The error count told me nothing about the number of problems. If anything it pointed the wrong way, because the files with the most errors were the ones furthest downstream from the cause.
-
-What would have found it in a minute:
-
-- `tsc --traceResolution` on one failing import, grepping for the package. It shows exactly which `exports` condition matched and which declaration file it went looking for.
-- `npx @arethetypeswrong/cli --from-npm optics-ts@2.3.0`, or any other suspect. Flagging export maps that resolve to no types is exactly what it's for.
-- Before flipping `moduleResolution` at all, a quick scan of `node_modules` for packages that have an `exports` field but no `types` key anywhere inside it. Most hits will be fine, because a `.d.ts` sits next to the JS target. The ones that aren't are your 305.
-
-A short script for the last one:
+**Scan for exports maps with no types condition.** Before changing `moduleResolution`, list every installed package that has an `exports` field and no `types` key anywhere in it:
 
 ```js
 // find-untyped-exports.mjs
-import { readdirSync, readFileSync, existsSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 
 const root = "node_modules";
@@ -117,20 +67,14 @@ for (const dir of dirs) {
   const file = join(root, dir, "package.json");
   if (!existsSync(file)) continue;
   const pkg = JSON.parse(readFileSync(file, "utf8"));
-  if (pkg.exports && !JSON.stringify(pkg.exports).includes('"types"')) {
-    console.log(dir);
-  }
+  if (pkg.exports && !JSON.stringify(pkg.exports).includes('"types"')) console.log(dir);
 }
 ```
 
-It only looks at top-level packages, and it will flag packages that rely on sibling `.d.ts` files, which work fine. It is a list of suspects, not a verdict.
+It is a list of suspects, not a verdict. Most hits are fine, because a `.d.ts` sits next to the JS file the map points at. It also only sees top-level packages, so nested copies need a deeper walk. The suspects worth chasing are the ones your own types flow through.
 
-## The general rule
+**Check a suspect properly.** `npx @arethetypeswrong/cli --pack` inside a package directory, or the web version at arethetypeswrong.github.io for a published version, reports exactly which resolution modes find no types. It exists for this problem.
 
-`node` resolution walks the filesystem and forgives everything. `bundler` resolution obeys export maps and forgives nothing. Every package that "worked" because TypeScript was ignoring its export map is a latent error, and the switch sends all of them off at once, multiplied by however many files infer types through them.
+**Trace one failing import.** If you have already switched and are staring at a wall of `unknown`, pick one error and run `tsc --traceResolution` filtered to the package you suspect. It prints which exports condition matched and which declaration file TypeScript went looking for. Following one value back to its source took minutes. Reading the error list would have taken a week.
 
-There's a small coda. A couple of months before this, I had tried bumping jotai to a newer 1.x minor and got 221 type errors that came in through its optics integration, and I backed off because the library was being phased out anyway. I never confirmed it, but I'd bet that was the same hole showing through a different door.
-
-Count the files, then ignore the count and go find the root. It's almost never 48 problems. It's one problem wearing 48 coats.
-
-Next I want to add the export-map scan to CI, so the next dependency that ships without a `types` entry fails a check instead of a migration.
+Run the scan in CI as well. The next dependency that ships an exports map without types should fail a check, not turn into a migration.

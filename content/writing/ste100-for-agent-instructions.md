@@ -1,39 +1,33 @@
 ---
-title: Writing agent instructions in an aerospace maintenance standard
+title: Aviation solved prompt ambiguity decades ago
 date: 2026-09-25T16:40:00+05:30
-summary: ASD-STE100 was built so aircraft technicians can't misread a procedure. An agent reading my instructions has the same problem and no way to ask what I meant.
+summary: Aircraft maintenance manuals are written for a reader who can't ask a follow-up question. So are agent instructions. The standard aviation built for that reader, ASD-STE100, transfers almost rule for rule.
 frame: 037
 tone: "#041f44"
 focus: 55%
 ---
 
-The most useful change I made to my agent prompts this year was borrowing a writing standard from aircraft maintenance manuals.
+Every instruction you give a coding agent is read by someone who cannot ask what you meant. A colleague would stop and say "check them how?" or "which thread?" The agent picks a reading and acts on it, and it acts with the same confidence whether it guessed right or wrong.
 
-ASD-STE100, Simplified Technical English, exists because a misread instruction on an aircraft can kill someone, and the people reading it were often not native English speakers and had nobody to call. So the standard strips out the two things that cause most misreadings: words with more than one meaning, and sentences with more than one possible structure. The current issue, from January 2025, has 53 writing rules in 9 sections and a dictionary of about 900 approved words, one meaning and one part of speech each.
+Aviation has had this reader for decades. A technician working from a maintenance manual is often not a native English speaker, is often alone, and gets no second chance if the procedure is ambiguous. The industry's answer is ASD-STE100, Simplified Technical English. It does not try to make writing pleasant. It removes the two things behind most misreadings: words that carry more than one meaning, and sentences that parse more than one way. The current issue has 53 rules and a dictionary of about 900 approved words, each with one meaning and one part of speech.
 
-An agent reading my instructions is in the same position as that technician. It can't lean over and ask "did you mean report it or change it?" It picks a reading and acts on it.
+## Seven rules that do most of the work
 
-## The rules that matter
+The standard has two kinds of rule. The lexical rules, one word for one meaning and approved words only, depend on the dictionary, which you can obtain from ASD but not redistribute. The structural rules need nothing but the rule itself, and they catch most of the damage:
 
-I use an open-source skill that encodes the rule categories without the dictionary. ASD lets you obtain the standard for free but not redistribute it, so the word list stays out. That splits the rules in two.
+1. Use the active voice. "Discard each duplicate", not "duplicates should be discarded". The passive hides who acts.
+2. Write one instruction per sentence.
+3. Keep instructions to 20 words and descriptions to 25.
+4. Do not use phrasal verbs. "Start the job", not "spin up the job". A two-word verb means things its parts don't predict.
+5. Do not use semicolons. The standard bans the mark outright.
+6. Do not drop words to save space. Keep the subject, the verb and the article.
+7. Put any sequence of three or more steps in a numbered list.
 
-The structural rules you can apply from the description alone, and they do most of the work:
+Without the dictionary, the lexical rules shrink to one habit that is still worth most of their value: pick the plainest word for a thing, then use that same word every time. Synonym rotation, the thing school taught you to do, tells a model that "check", "verify" and "look for" are three different actions.
 
-- Active voice. "Discard each duplicate", not "duplicates should be discarded."
-- One instruction per sentence.
-- 20 words or fewer for an instruction, 25 for a description.
-- No phrasal verbs. "Start the job", not "spin up the job." A two-word verb means things its parts don't predict.
-- No semicolons. The standard bans the mark outright.
-- No ellipsis. Keep the subject, the verb and the article, even when it reads longer.
-- A numbered list for any sequence of three or more steps.
+## What a rewrite finds
 
-The lexical rules, one word for one meaning, approved words only, really need the dictionary. Without it, they turn into a direction of travel: pick the plainest word, then use the same word for the same thing every time. That second half is checkable even without the list, and it's the one that catches me most.
-
-There's also a linter script that checks the structural rules mechanically: semicolons, sentence length, phrasal verbs, nominalizations, marketing adjectives, passive voice, synonym rotation within a file. By design it never flags hedges.
-
-## A real rewrite
-
-Here's an instruction I typed into an agent session, more or less verbatim:
+Here is an instruction I typed into an agent session, nearly verbatim:
 
 ```
 Check all the tickets assigned to me that are on low risk. Verify each
@@ -43,13 +37,12 @@ Look for the previous occurrences, look for the thread, and give me
 exact action items for each ticket.
 ```
 
-It reads fine to a human. Run it through the rules and it has nine violations. The worst ones:
+A person reads that without trouble. Under the rules it has nine violations, and the worst ones are not style problems. They are places where the agent has to invent something:
 
-- "On low risk" names no field. The tracker has a priority field and nothing called risk. An agent will either guess or invent a filter.
-- "Check", "verify" and "look for" are three verbs for overlapping actions. Are they three steps or one?
-- "The thread" and "the previous occurrences" have no referent. Which thread? Occurrences of what?
-- "If they are duplicates" never says what makes something a duplicate.
-- A sequence of four or five steps is buried in one paragraph.
+- "On low risk" names no field. The tracker has a priority field and nothing called risk, so the agent will guess a filter or make one up.
+- "Check", "verify" and "look for" may be one step or three.
+- "The thread" and "the previous occurrences" have no referent.
+- "If they are duplicates" never defines a duplicate.
 
 The rewrite:
 
@@ -57,38 +50,34 @@ The rewrite:
 1. Find all tickets with these two properties: the assignee is me, and
    the priority is Low.
 2. Examine each ticket.
-3. Find the Slack thread for each ticket. Read the thread.
-4. Find the tickets from before this date that report the same error.
+3. Find the chat thread for each ticket. Read the thread.
+4. Find the earlier tickets that report the same error.
 5. A ticket is a duplicate if a different ticket reports the same error.
    Discard each duplicate ticket.
 6. Write one exact action item for each ticket that is not a duplicate.
-7. Write the results to a note in the Obsidian vault.
+7. Write the results to one note.
 ```
 
-It's longer and flatter, and it's harder to get wrong. "Find" always means retrieve. "Examine" always means inspect. Step 5 is a definition the agent can test against instead of a vibe. Each step can be checked on its own.
+It is longer and flatter, and much harder to get wrong. "Find" always means retrieve and "examine" always means inspect. Step 5 is a definition the agent can test a ticket against. Every step can be checked on its own, which also means that when the agent goes wrong you can see which step it went wrong at.
 
-The second instruction from the same session was shorter and had a nastier problem: "arrange if some ticket assignment is incorrect." "Arrange" can mean "tell me" or "fix it," and reassigning a ticket is not something you can quietly undo. The rewrite picks the safe reading and says so: find each ticket with the wrong assignee, name the correct assignee, and leave the change to me. When a verb can mean either a report or an irreversible action, the rewrite should choose the report.
+The same session had a shorter instruction with a worse problem: "arrange if some ticket assignment is incorrect". "Arrange" can mean "tell me" or "fix it", and reassigning a ticket is not quietly reversible. This gives the one rule I would add to the standard for agents:
 
-> A shorter sentence that upgrades a hedge to a fact isn't a simplification. It's a different claim.
+> When a verb can mean either a report or an irreversible action, write the report.
 
-## Where it goes wrong
+The rewrite says: find each ticket with the wrong assignee, name the correct assignee, and do not change the ticket. If you want the action, ask for it in a separate, explicit step.
 
-The failure mode isn't verbosity. It's cutting meaning to hit the length cap.
+## Where the standard misleads you
 
-The rule I trust most in the skill is about modality. "The request may have failed" stays "may have failed." Turning it into "the request failed" makes it shorter and cleaner and false. Hedges carry the writer's confidence, and confidence is content. Length caps tempt you to cut exactly those words, which is why the linter is built to leave them alone.
+The danger in a length limit is not verbosity. It is cutting meaning to fit. "The request may have failed" is longer than "the request failed", and the shorter sentence is cleaner, simpler and false. Hedges carry the writer's confidence, and for an agent that confidence decides whether to retry, escalate or stop. A rewrite that turns a hedge into a fact has not simplified the claim. It has made a different one. Keep the modal verbs, even where they cost you the word count.
 
-The same goes for tense. STE excludes the present perfect, and aircraft manuals never miss it. Status text does. "The job has completed" means the output is there now. "The job completed" means it finished at some point. When the compound form carries information, I keep it and note the exception.
+Tense is the second trap. STE leaves out the present perfect, which aircraft manuals never need and status text does. "The job has completed" says the output exists now. "The job completed" says it finished at some point, which is a weaker claim. When the compound tense carries information, keep it.
 
-And it's the wrong tool for prose. Strict mode applied to a blog post reads like a personality transplant, and this post isn't written in it. The skill has a looser mode for READMEs and PR descriptions that keeps the sentence rules but drops the one-word-one-meaning lockdown. I use strict mode for anything a machine acts on: agent instructions, tool descriptions, error messages, status lines.
+The third is scope. Applied to prose, strict STE reads like a personality transplant, and this page is not written in it. It belongs wherever a machine acts on the text or a person acts on it under pressure: agent instructions, tool and function descriptions, error messages, status lines, runbooks. A looser mode, with the sentence rules and without the one-word lockdown, works well for READMEs and PR descriptions.
 
-## Where I use it now
+## Making it a habit, not a rewrite
 
-Mostly in places where the reader is a model and the cost of misreading is real.
+Most of the structural rules can be checked by a script: semicolons, sentence length, phrasal verbs from a list, passive constructions, and the same noun appearing under different names in one file. A small linter run over instruction files catches the mechanical violations before an agent does. It should never flag hedges.
 
-My PR review bot runs three models in parallel lanes and then an aggregator pass. The last step of that pass rewrites the summary in the looser mode, so the comment that lands on a PR reads as plain English instead of three models' worth of hedged bullet points. The verdict itself is computed in code from the comment severities. I don't ask a model for that, and I don't ask STE to fix it either.
+Keep the original next to the rewrite. When an agent does something strange a month later, the pair tells you whether the instruction was ambiguous or the agent was wrong, and those need different fixes.
 
-The triage instructions above now live as a reference note I reuse, with the original text and a table of what changed next to the rewrite. Keeping the original matters. When an agent does something odd later, I can see whether the instruction was ambiguous or the agent was.
-
-The side effect I didn't expect is that it makes thin thinking obvious. STE fixes the form of a text, not its substance. A hollow paragraph rewritten under these rules becomes a short, clean, hollow paragraph, and it's much harder to hide that it says nothing.
-
-Next I want the linter running as a pre-commit check on agent instruction files, so I find the nine violations before the agent does.
+The last effect is the one I did not expect. STE fixes the form of a text, not its substance. A hollow paragraph rewritten under these rules becomes a short, clean, hollow paragraph, and it gets much harder to hide that it says nothing. For instructions that is a feature, because an agent was never going to act well on the hollow version either.

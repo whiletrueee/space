@@ -1,60 +1,23 @@
 ---
-title: Fix the codebase, not the prompt
+title: If your linter can check it, it doesn't belong in the prompt
 date: 2026-08-12T15:22:00+05:30
-summary: A codebase a designer can safely change is the same codebase an agent can safely change. Prompts are the wrong place to put that work; lint rules and structure are the right one.
+summary: Agents follow the code next to them over the rules you wrote down, every time. Every rule your linter could check is a rule that doesn't belong in a prompt. Here is how to move them, and the flat-config traps on the way.
 frame: 030
 tone: "#888178"
 focus: 45%
 ---
 
-A codebase that a non-engineer can change correctly is the same codebase an LLM can change correctly. Both need one property: there is one obvious way to do each thing, and the code says what it is for. I spent a while treating "make agents better at our repo" and "make our repo easier for product and design to touch" as two projects. They are one project with one prerequisite.
+An agent editing your code will follow the example in the file over the rule in your prompt. It reads the rule once, at the top of a long context. It reads the example right next to the line it is changing. When the two disagree, the example wins, and it should: the example is evidence of how this codebase actually works, and the rule is a claim about how someone wishes it did.
 
-The internal tool I work on is a large Next.js dashboard. Every week someone in product or design knows exactly what they want changed: a label, a column, a modal state, a filter. Every week that change waits for an engineer. The change isn't hard. The repo just doesn't tell you where it lives or how it's built. We had three ways to write a modal, two component libraries, colour tokens that named a hex value instead of a purpose, and dead modules that still compiled. A 10-line change cost three hours of archaeology, and only a few people could do the archaeology.
+So most of the time spent tuning `AGENTS.md` is spent on the wrong layer. If a rule can be checked by a machine, it belongs in the linter, where it holds for every contributor without anyone remembering it. The prompt should keep only what can't be checked.
 
-An agent hits the same wall, but it doesn't stop. It picks one of the three modal patterns at random and keeps going.
+## The audit
 
-## The prompt is the wrong layer
+The file I started from had grown to about 60 "non-negotiables": no default exports outside `pages/`, `type` over `interface`, no inline styles, no raw SVG, no TypeScript enums, no barrel files, kebab-case filenames, and so on. Agents mostly obeyed them until the context got long or the nearest example did the opposite, which in a codebase that had broken every one of those rules hundreds of times was often.
 
-The first instinct is to write it all down. Our `AGENTS.md` grew to about 60 non-negotiables: no default exports outside `pages/`, `type` instead of `interface`, no inline `style={{}}`, no raw SVG, no TS enums, no barrel files, kebab-case filenames, and so on.
+Sorting the 60 by whether a static check could enforce them gave a clear split: most could. A rough grep showed what each one would cost:
 
-That file is prose. Every human and every agent has to remember it and choose to follow it. Agents mostly do, until the context gets long or the nearest example in the file they're editing does the opposite. Then they copy the example, because the example is code and the rule is a paragraph.
-
-So I flipped the bar. An agent with no prior context should be able to read the repo and infer the correct change. If it can't, that's a defect in the code, not in the prompt, and the fix goes in the code. The strongest version of that is simple to say:
-
-> The wrong pattern shouldn't compile.
-
-Most of those 60 rules can be checked statically. Turning them into lint rules means nobody has to remember them, human or model.
-
-## Getting to a linter that can say it
-
-We couldn't do any of this on ESLint 7 with an eslintrc. The rules I wanted needed flat config and current plugins, so the boring part came first: Prettier 2 to 3, ESLint 7 to 9 with flat config, Husky 7 to 9. Three PRs, no behaviour change, no new rules.
-
-The upgrade had one finding that dwarfed everything else. The new Next.js ESLint config pulls in `eslint-plugin-react-hooks@7`, and its recommended preset adds 14 React Compiler rules, all at `error`. That one transitive bump was 219 of the 231 new errors. Any plan that missed it would hit a wall of errors it couldn't explain.
-
-| Stage | Errors | Warnings |
-|---|---|---|
-| Before | 0 | 319 |
-| Flat config, raw | 546 | 640 |
-| After `eslint --fix` | 13 | 636 |
-| After 13 hand-fixes | 0 | 636 |
-
-The raw number looks scary, but `import/order` (533) and `prettier/prettier` (425) were fully autofixable. Most of it was one mechanical commit. The 219 compiler findings shipped as warnings. They aren't noise, though: 50 `set-state-in-effect` and 145 `refs` hits are exactly the class of bug behind the render loops we'd been chasing.
-
-Two traps are worth writing down. If you leave out `eslint-config-next/typescript`, the base `no-unused-vars` and `no-undef` run on TypeScript files and you get 1,027 and 239 false errors. And `no-non-null-assertion` left typescript-eslint's recommended set a few majors ago, so a rule our docs promised quietly stopped being enforced. I added it back by hand.
-
-## Encoding the rules
-
-The prize is turning the prose into rules. One flat-config detail shapes the whole design: when two blocks set the same rule key, the later one replaces the earlier one. Options don't merge. You can't stack five scoped `no-restricted-imports` blocks and have them add up. Every new import restriction has to join one consolidated block or become a small custom rule with its own key. A repo with lots of custom `local/*` rules isn't doing NIH. It's working around this.
-
-The adoption trick is to ship every rule now, as a counted debt marker:
-
-```js
-"import/no-default-export": "warn", // TODO: ~269 files. Fix, then promote to "error".
-```
-
-Rules with zero violations ship at `error` on day one and can't regress. Everything else ships at `warn` with a count, then gets burned down and promoted one line at a time. The grep estimates were not small:
-
-| Rule | Approx. violations |
+| Rule | Existing violations |
 |---|---|
 | No default exports outside `pages/` | ~269 files |
 | No barrel files | ~154 |
@@ -64,16 +27,39 @@ Rules with zero violations ship at `error` on day one and can't regress. Everyth
 | TS `enum` | ~52 |
 | Non-kebab-case filenames | 805 of 2,198 |
 
-When a rule reaches `error`, its bullet comes out of `AGENTS.md`. The prose stops carrying weight. Each rule ends up in one of three places: an enforced rule, a counted warning with a TODO, or an explicit list of things that can't be checked statically ("avoid `useEffect` unless necessary", "match the surrounding patterns"). Nothing gets a silent fourth option.
+Those counts are why the rules were prose in the first place. Nobody turns on a rule that fails the build in 269 files.
 
-There's a risk I'm watching. CI already ignores warnings, so `warn` can turn into a permanent parking lot. The counted TODO is the only thing stopping that, and it only works if review enforces it.
+## Ship every rule now, as counted debt
 
-## Where prose still belongs
+The way round that is to ship every rule on the same day, at one of two levels:
 
-Not everything should become a rule. For long agent-driven migrations, I keep two kinds of file. Markdown holds the decisions: why something was deferred, the constraints, the ambiguities we resolved. YAML holds the lookups: source-to-target paths, dependencies, per-item status, temporary hacks with a `remove_when`.
+```js
+"no-var": "error",                   // 0 violations: it can never come back
+"import/no-default-export": "warn", // TODO: ~269 files. Fix, then promote to "error".
+```
 
-In practice the split is roughly 70/30 each way. Markdown carries most of the planning value and YAML carries most of the execution value. `status: DEFERRED` tells an agent nothing about what to do differently. "Deferred because a shallow merge would wipe 40 keys" stopped an actual mistake. But a file path buried in a paragraph is slow to find, and a structured field is instant. Below about 20 items, Markdown alone is fine. Above 50, YAML becomes the source of truth and the Markdown shrinks to context. Never put the same fact in both, because they drift.
+A rule with no violations goes in at `error` and can never regress. A rule with violations goes in at `warn` with its count in a comment, and gets burned down and promoted one line at a time. When a rule reaches `error`, its bullet comes out of `AGENTS.md`, because the prose no longer carries any weight.
 
-None of this is a bet on models getting smarter. It removes the variance that makes any contributor guess, whether that's a junior engineer, a designer, or an agent. Each ambiguity we delete raises the ceiling for all three at once.
+> The wrong pattern shouldn't compile.
 
-Next: the issue-to-PR bot for the bounded stuff, like copy, tokens, list columns and filters, where the issue itself is the whole handoff.
+Every rule ends up in exactly one of three places: enforced, counted, or on a short explicit list of things that genuinely can't be checked ("avoid `useEffect` unless necessary", "match the surrounding patterns"). That list is the only part of the prompt that should still be about style. The risk to watch is that `warn` becomes a permanent parking lot, since CI usually ignores warnings. The count in the comment is what stops that, and only if review holds people to it.
+
+## Traps on the way to flat config
+
+None of this works on an old ESLint. Custom and scoped rules want flat config and current plugins, so the boring upgrade comes first and should land with no new rules at all, so that every new error is attributable to the upgrade. Four things are worth knowing before you start.
+
+**One transitive bump will dominate.** The current Next.js ESLint config pulls in `eslint-plugin-react-hooks@7`, whose recommended preset adds 14 React Compiler rules at `error`. In our upgrade that was 219 of the 231 new errors. Ship them as warnings, and read them: the `set-state-in-effect` and `refs` findings are exactly the class of bug behind render loops.
+
+**The raw number is not the work.** Flat config took the count from 0 errors to 546, but `import/order` and `prettier/prettier` accounted for most of it and were fully autofixable. After `eslint --fix` there were 13 left to fix by hand.
+
+**Missing the TypeScript layer floods you with false errors.** Leave out `eslint-config-next/typescript` and the base `no-unused-vars` and `no-undef` run on TypeScript files: 1,027 and 239 errors that mean nothing.
+
+**Rule options don't merge.** When two flat-config blocks set the same rule, the later one replaces the earlier one entirely. You cannot stack five scoped `no-restricted-imports` blocks and have them add up. Each new restriction has to join one consolidated block or become a small custom rule with its own name. A repo full of `local/*` rules isn't reinventing anything. It's working around this.
+
+Also check what your docs claim is enforced. `no-non-null-assertion` left typescript-eslint's recommended set a few major versions ago, so a rule the team believed in had quietly stopped running.
+
+## What the prompt is for
+
+What's left for prose is what can't be expressed as a check: why a decision was made, which constraint rules out the obvious approach, what was tried and abandoned. For long agent-driven migrations I split even that in two. Markdown holds the reasoning, because "deferred because a shallow merge would wipe 40 keys" stops a real mistake where `status: DEFERRED` stops nothing. YAML holds the lookups an agent needs instantly: source and target paths, per-item status, temporary workarounds with a condition for removing them. Never put the same fact in both, because they drift.
+
+This isn't a bet on models getting better at following rules. It removes the reason any contributor has to guess. The same change that stops an agent picking the wrong one of three modal patterns stops a new hire doing it, and it does both without anyone reading a word.
