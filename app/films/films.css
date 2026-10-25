@@ -481,3 +481,21 @@
     animation: none;
   }
 }
+
+/* a table in the notes, typed: no rules but one under the header, columns by spacing */
+.sp-notes-body table {
+  width: 100%;
+  margin-top: 1lh;
+  border-collapse: collapse;
+}
+.sp-notes-body th {
+  font-weight: 700;
+  text-align: left;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--ink);
+}
+.sp-notes-body th,
+.sp-notes-body td {
+  padding: 0.15lh 2ch 0.15lh 0;
+  vertical-align: top;
+}
