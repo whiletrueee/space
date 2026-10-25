@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
+import type { CSSProperties } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { formatDate, formatTime, getPost, getPosts, SITE } from "@/lib/posts";
 import { FitTitle } from "../fit-title";
 import { Prose } from "../prose";
+import { Screening } from "../screening";
 
 export const dynamicParams = false;
 
@@ -41,63 +43,79 @@ export default async function PostPage({ params }: PageProps<"/writing/[slug]">)
   const newer = posts[i - 1];
   const older = posts[i + 1];
 
+  // each section opens on different coverage of the same frame: a wide, then close-ups around
+  // its focal point, the way one location is shot from several setups
+  const focus = parseFloat(post.frame?.focus ?? "50");
+  const shots = [
+    [50, 0, 1],
+    [28, -6, 1.7],
+    [72, 8, 1.45],
+    [42, 12, 2.1],
+    [62, -10, 1.3],
+  ];
+  let scene = 0;
+  const html = post.frame
+    ? post.html.replace(/<h2 /g, () => {
+        const [x, dy, z] = shots[scene % shots.length];
+        const y = Math.min(95, Math.max(5, focus + dy));
+        scene++;
+        const label = `Scene ${String(scene).padStart(2, "0")}`;
+        return `<figure class="shot" aria-hidden="true" style="--x:${x}%;--y:${y}%;--z:${z}"><span>${label}</span></figure><h2 `;
+      })
+    : post.html;
+  const no = posts.length - i;
+
   return (
-    <article className={`w-post w-grid${post.frame ? " has-still" : ""}`}>
-      {post.frame && (
-        <figure className="w-still" style={{ background: post.frame.tone }}>
-          {/* eslint-disable-next-line @next/next/no-img-element -- static export, no optimizer */}
-          <img
-            src={post.frame.large}
-            srcSet={`${post.frame.small} 960w, ${post.frame.large} 1920w, ${post.frame.xl} 2880w`}
-            sizes="100vw"
-            alt=""
-            fetchPriority="high"
-            style={{ objectPosition: `50% ${post.frame.focus}` }}
-          />
-          <figcaption>
-            <span>Frame {post.frame.number}</span>
-            <span>2.39 : 1</span>
-          </figcaption>
-        </figure>
-      )}
-      <header className="w-post-head">
-        <p className="w-kicker">
-          <Link href="/writing/">Writing</Link>
-          <span className="sep">/</span>
-          <time dateTime={post.date.toISOString()}>
-            {formatDate(post.date)}
-            <span className="sep">·</span>
-            {formatTime(post.date)}
-          </time>
-          <span className="sep">·</span>
-          {post.minutes} min read
-        </p>
-        <FitTitle as="h1" text={post.title} className="w-title" target={0.11} min={34} maxRatio={0.2} />
-        <p className="w-dek">{post.summary}</p>
-      </header>
+    <Screening frame={post.frame} minutes={post.minutes}>
+      <article
+        className="s-post"
+        style={post.frame ? ({ "--frame": `url(${post.frame.large})`, "--tone": post.frame.tone } as CSSProperties) : undefined}
+      >
+        <header className="s-open">
+          <p className="c-slate">
+            <span>
+              <Link href="/writing/">Writing</Link> · No. {String(no).padStart(2, "0")}
+            </span>
+            {post.frame && <span>Frame {post.frame.number} · 2.39 : 1</span>}
+          </p>
+          <div className="s-open-title">
+            <p className="c-meta">
+              <time dateTime={post.date.toISOString()}>
+                {formatDate(post.date)}
+                <span className="sep">·</span>
+                {formatTime(post.date)}
+              </time>
+              <span className="sep">·</span>
+              {post.minutes} min
+            </p>
+            <FitTitle as="h1" text={post.title} className="s-title" target={0.12} min={40} maxRatio={0.22} />
+            <p className="s-dek">{post.summary}</p>
+          </div>
+          <p className="c-cue">Scroll to begin ↓</p>
+        </header>
 
-      <Prose html={post.html} />
+        <div className="s-reel w-grid">
+          <Prose html={html} />
+          <p className="s-fin">Fin.</p>
+        </div>
 
-      <p className="w-end" aria-hidden>
-        ∎
-      </p>
-
-      {(older || newer) && (
-        <nav className="w-next">
-          {older && (
-            <Link href={`/writing/${older.slug}/`}>
-              <span className="w-kicker">← Earlier</span>
-              <span className="t">{older.title}</span>
-            </Link>
-          )}
-          {newer && (
-            <Link href={`/writing/${newer.slug}/`}>
-              <span className="w-kicker">Later →</span>
-              <span className="t">{newer.title}</span>
-            </Link>
-          )}
-        </nav>
-      )}
-    </article>
+        {(older || newer) && (
+          <nav className="s-next" aria-label="More writing">
+            {[older && { p: older, label: "← Earlier screening" }, newer && { p: newer, label: "Later screening →" }]
+              .filter((x) => !!x)
+              .map(({ p, label }) => (
+                <Link key={p.slug} href={`/writing/${p.slug}/`} className="s-card" style={{ background: p.frame?.tone }}>
+                  {p.frame && (
+                    // eslint-disable-next-line @next/next/no-img-element -- static export, no optimizer
+                    <img src={p.frame.small} alt="" loading="lazy" style={{ objectPosition: `50% ${p.frame.focus}` }} />
+                  )}
+                  <span className="c-meta">{label}</span>
+                  <span className="s-card-title">{p.title}</span>
+                </Link>
+              ))}
+          </nav>
+        )}
+      </article>
+    </Screening>
   );
 }
