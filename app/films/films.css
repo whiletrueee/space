@@ -559,7 +559,8 @@
 .is-on .crt-screen {
   box-shadow: 0 0 1.8rem rgb(170 210 255 / 0.25);
 }
-.crt-screen iframe {
+.crt-screen iframe,
+.crt-screen > div:not(.crt-glass) {
   display: block;
   width: 100%;
   min-width: 200px;
