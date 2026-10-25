@@ -2,6 +2,9 @@
 title: Code search across two repos that talk to each other
 date: 2026-10-06T04:02:00+05:30
 summary: A frontend and its backend share no imports, so a code graph sees two islands. I linked them through REST routes, GraphQL fields and shared type names, and that link is what made cross-repo questions answerable.
+frame: 019
+tone: "#2c614b"
+focus: 50%
 ---
 
 A TypeScript frontend and the Kotlin backend it calls share no imports. To a code graph they are two islands. What connects them is a string: a URL in an HTTP call on one side, and the same path in a `@GetMapping` annotation on the other.

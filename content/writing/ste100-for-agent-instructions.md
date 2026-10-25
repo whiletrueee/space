@@ -2,6 +2,9 @@
 title: Writing agent instructions in an aerospace maintenance standard
 date: 2026-09-25T16:40:00+05:30
 summary: ASD-STE100 was built so aircraft technicians can't misread a procedure. An agent reading my instructions has the same problem and no way to ask what I meant.
+frame: 037
+tone: "#041f44"
+focus: 55%
 ---
 
 The most useful change I made to my agent prompts this year was borrowing a writing standard from aircraft maintenance manuals.

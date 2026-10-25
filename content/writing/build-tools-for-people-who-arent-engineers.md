@@ -2,6 +2,9 @@
 title: Build tools for the people who aren't engineers
 date: 2026-07-21T16:14:00+05:30
 summary: A design lab where designers build screens in real code, and a JSON playground where PMs and QA can see how a payload renders. Both are small, and both removed a queue.
+frame: 045
+tone: "#b0d0da"
+focus: 62%
 ---
 
 Some of the most useful things I've built this year have no engineers as users. One is a folder where designers build screens in our real codebase instead of in Figma. The other is a playground where a PM or QA can paste a payload and see exactly how it renders. Neither one ships to production. Both removed a queue that used to run through me.

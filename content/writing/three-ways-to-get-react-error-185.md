@@ -2,6 +2,9 @@
 title: Three ways to get React error #185
 date: 2026-08-06T15:59:00+05:30
 summary: Maximum update depth exceeded, three times, from three different directions. A merged ref that was never memoised, a Radix component that broke under React 19, and an async effect that claimed its guard too late.
+frame: 035
+tone: "#612922"
+focus: 50%
 ---
 
 React error #185 is "Maximum update depth exceeded." React throws it when updates keep scheduling more updates past a fixed limit of 50 nested updates, on the theory that you're in a loop and would rather crash than hang. I've hit it three times this year in the same large Next.js dashboard. None of the three looked like the textbook `setState` in render. Two of them only showed up because something else changed underneath code that had always been wrong.

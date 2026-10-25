@@ -2,6 +2,9 @@
 title: Next 13 to 16, a live log
 date: 2026-08-03T23:42:00+05:30
 summary: A running diary of dragging a large Pages Router dashboard from Next 13.5 and React 18 up to Next 16, React 19 and Turbopack. Written while shipping, timestamps and all.
+frame: 004
+tone: "#2e2b3d"
+focus: 55%
 ---
 
 This is a log, not a guide. I kept it open in a second window while dragging a large Next.js dashboard from Next 13.5 and React 18 up to Next 16 and React 19, one rung at a time. Pages Router, 60 routes, an internal design-system package, and a lot of dependencies nobody had looked at since 2023. Rules: timestamps, no filler, ship first, apologise later.

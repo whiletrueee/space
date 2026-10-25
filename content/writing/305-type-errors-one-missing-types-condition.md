@@ -2,6 +2,9 @@
 title: 305 type errors were one missing types condition
 date: 2026-08-02T20:17:00+05:30
 summary: Switching TypeScript to bundler module resolution turned a clean type-check into 305 errors across 52 files. The cause was one transitive dependency whose exports map had no types entry.
+frame: 024
+tone: "#9e9d9d"
+focus: 72%
 ---
 
 One line in a dependency's `package.json` produced 305 TypeScript errors across 52 files in our codebase, and it had been sitting there harmlessly for years. It only went off when the compiler started reading export maps.

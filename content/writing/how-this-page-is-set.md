@@ -2,6 +2,9 @@
 title: How this page is set
 date: 2026-10-25T08:50:00+05:30
 summary: Browsers break lines one at a time and never look back. This page measures every word first, then sets titles like a poster, paragraphs like a book, and endings like the old ones did.
+frame: 061
+tone: "#b2a392"
+focus: 55%
 ---
 
 Every browser sets a paragraph the same way. It fills a line with words until the next one does not fit, breaks, and moves on. It never looks back. A bad break early in a paragraph cannot be fixed by a better one later, because by then the early line is already set. Justify that text and the damage shows: one line is tight, the next has gaps wide enough to drive through, and the eye trips on both.

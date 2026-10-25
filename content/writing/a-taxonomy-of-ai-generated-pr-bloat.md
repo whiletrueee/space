@@ -2,6 +2,9 @@
 title: A taxonomy of AI-generated PR bloat, with numbers
 date: 2026-10-21T23:08:00+05:30
 summary: I audited nine AI-assisted PRs for code that could go without losing any behaviour. The removable share ran from about 1% to 85%, and most of it was not where I expected.
+frame: 048
+tone: "#b6a381"
+focus: 50%
 ---
 
 The most bloated PR I audited was 85% removable, and very little of it was bad code. It was two unrelated fixes riding along on a 30-line change. The leanest came in at about 1%.

@@ -2,6 +2,9 @@
 title: A vault only agents write to
 date: 2026-08-12T14:55:00+05:30
 summary: I stopped organising my notes for myself. The vault now has one writer, a coding agent, and a sixty-line script that keeps an index it reads before anything else.
+frame: 027
+tone: "#303840"
+focus: 40%
 ---
 
 I don't write notes in my work vault anymore. A coding agent does. The file that tells it how opens with: "This vault is an agent write-target. Claude Code is the only thing that writes here."

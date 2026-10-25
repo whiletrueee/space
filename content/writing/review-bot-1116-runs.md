@@ -2,6 +2,9 @@
 title: My review bot ran 1,116 times and posted nothing
 date: 2026-09-29T11:00:00+05:30
 summary: A headless PR review agent stopped working on a Thursday and nobody noticed for five days. The fix wasn't better review logic. It was a status page.
+frame: 018
+tone: "#223644"
+focus: 72%
 ---
 
 On 24 September my PR review bot stopped posting reviews. It didn't stop running. Over the next five days it started 1,116 review runs, all for the same pull request, and not one of them reached GitHub.

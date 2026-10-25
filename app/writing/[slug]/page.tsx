@@ -42,7 +42,24 @@ export default async function PostPage({ params }: PageProps<"/writing/[slug]">)
   const older = posts[i + 1];
 
   return (
-    <article className="w-post w-grid">
+    <article className={`w-post w-grid${post.frame ? " has-still" : ""}`}>
+      {post.frame && (
+        <figure className="w-still" style={{ background: post.frame.tone }}>
+          {/* eslint-disable-next-line @next/next/no-img-element -- static export, no optimizer */}
+          <img
+            src={post.frame.large}
+            srcSet={`${post.frame.small} 960w, ${post.frame.large} 1920w`}
+            sizes="100vw"
+            alt=""
+            fetchPriority="high"
+            style={{ objectPosition: `50% ${post.frame.focus}` }}
+          />
+          <figcaption>
+            <span>Frame {post.frame.number}</span>
+            <span>2.39 : 1</span>
+          </figcaption>
+        </figure>
+      )}
       <header className="w-post-head">
         <p className="w-kicker">
           <Link href="/writing/">Writing</Link>

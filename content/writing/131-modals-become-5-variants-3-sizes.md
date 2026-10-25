@@ -2,6 +2,9 @@
 title: 131 modals become 5 variants × 3 sizes
 date: 2026-10-16T14:45:00+05:30
 summary: I inventoried every dialog in a large dashboard before designing a modal primitive. The variants came from what the user has to do, the sizes came from widths people had already hard-coded, and the inventory found 20 bugs along the way.
+frame: 025
+tone: "#321c19"
+focus: 55%
 ---
 
 The dashboard I work on has 131 modal and sheet instances across 129 files, built on nine different engines, plus 19 wrappers around them. One engine is another one with a button removed. One is a different library entirely, not even on Radix. A third of the consumers of the main confirmation modal override its width because 400px is too narrow.

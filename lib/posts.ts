@@ -19,7 +19,24 @@ export type Post = {
   draft: boolean;
   minutes: number;
   html: string;
+  frame?: Frame;
 };
+
+/** The still that gives a post its spine on the index and its opening shot on the page */
+export type Frame = { number: string; small: string; large: string; tone: string; focus: string };
+
+const FRAMES = join(process.cwd(), "public/writing/frames");
+
+function frameOf(slug: string, data: Record<string, string>): Frame | undefined {
+  if (!data.frame || !existsSync(join(FRAMES, `${slug}-960.jpg`))) return undefined;
+  return {
+    number: data.frame,
+    small: `/writing/frames/${slug}-960.jpg`,
+    large: `/writing/frames/${slug}-1920.jpg`,
+    tone: data.tone || "#1d1a17",
+    focus: data.focus || "50%",
+  };
+}
 
 function parseFrontmatter(raw: string, file: string) {
   const m = raw.match(/^---\n([\s\S]*?)\n---\n?/);
@@ -108,6 +125,7 @@ export function getPosts(): Post[] {
         draft,
         minutes: Math.max(1, Math.round(body.split(/\s+/).length / 230)),
         html: md.parse(body, { async: false }),
+        frame: frameOf(slug, data),
       };
     })
     .sort((a, b) => b.date.getTime() - a.date.getTime());

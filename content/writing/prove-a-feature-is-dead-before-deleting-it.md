@@ -2,6 +2,9 @@
 title: Prove a feature is dead before deleting it
 date: 2026-07-29T14:15:00+05:30
 summary: A framework upgrade killed our PWA tooling. Before I deleted the PWA, I checked who used it. Three of the 25 accounts that had it turned on did anything at all, and none of them needed the PWA part.
+frame: 062
+tone: "#72939f"
+focus: 62%
 ---
 
 Three of 25. That is how many of the accounts with the feature turned on did anything with it in two months. And none of those three needed the part I was about to delete.

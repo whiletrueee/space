@@ -2,6 +2,9 @@
 title: Hiding the dark-mode toggle would still ship dark mode
 date: 2026-08-20T09:00:00+05:30
 summary: The toggle never turned dark mode on. A default did. So instead of hiding a button, we gated the feature by deleting 247 lines of OS detection.
+frame: 029
+tone: "#696840"
+focus: 55%
 ---
 
 Dark mode was never turned on by the toggle. It was turned on by a default.

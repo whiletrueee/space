@@ -146,11 +146,17 @@
   list-style: none;
 }
 .w-entry {
-  display: block;
+  display: grid;
+  grid-template-columns: 4.25rem minmax(0, 1fr);
+  column-gap: clamp(1.25rem, 3vw, 2.75rem);
+  align-content: start;
   padding: 2.25rem 0 2.5rem;
   border-bottom: 1px solid var(--rule);
   color: inherit;
   text-decoration: none;
+}
+.w-entry > :not(.spine) {
+  grid-column: 2;
 }
 .w-entry .meta {
   display: block;
@@ -173,6 +179,71 @@
   color: var(--muted);
   text-wrap: pretty;
 }
+/* the spine: a slice of the post's frame, like a book's spine on a shelf */
+.spine {
+  grid-column: 1;
+  grid-row: 1 / span 3;
+  position: relative;
+  overflow: hidden;
+  min-height: 9rem;
+}
+.spine img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: saturate(0.55) contrast(1.05);
+  transition:
+    object-position 1.4s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 0.6s;
+}
+.spine .no {
+  position: absolute;
+  bottom: 0.7rem;
+  left: 50%;
+  translate: -50% 0;
+  writing-mode: vertical-rl;
+  rotate: 180deg;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.625rem;
+  letter-spacing: 0.2em;
+  color: #fff;
+  mix-blend-mode: difference;
+}
+/* hovering scrubs across the frame, the way a strip of film slides through a viewer */
+.w-entry:hover .spine img {
+  object-position: 22% 50% !important;
+  filter: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .spine img {
+    transition: filter 0.6s;
+  }
+}
+@media (max-width: 640px) {
+  .w-entry {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .w-entry > :not(.spine) {
+    grid-column: 1;
+  }
+  .spine {
+    grid-row: auto;
+    min-height: 0;
+    height: 4.5rem;
+    margin-bottom: 1.25rem;
+  }
+  .spine .no {
+    writing-mode: horizontal-tb;
+    rotate: none;
+    left: auto;
+    right: 0.75rem;
+    bottom: 0.6rem;
+    translate: none;
+  }
+}
+
 .w-empty {
   grid-column: wide;
   color: var(--muted);
@@ -213,6 +284,39 @@
   flex: 1;
   padding: clamp(4.5rem, 13vh, 9rem) 0 7rem;
 }
+/* the opening shot: the frame letterboxed at 2.39:1 under the site's black bar */
+.w-post.has-still {
+  padding-top: 0;
+}
+.w-still {
+  grid-column: full;
+  position: relative;
+  margin-bottom: clamp(3.5rem, 10vh, 6.5rem);
+}
+.w-still img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 2.39 / 1;
+  max-height: 74svh;
+  object-fit: cover;
+}
+.w-still figcaption {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.85rem clamp(1.25rem, 3.5vw, 3.5rem);
+  background: #000;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.625rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgb(255 255 255 / 0.5);
+}
+@media (max-width: 640px) {
+  .w-still img {
+    aspect-ratio: 16 / 9;
+  }
+}
+
 .w-post-head {
   grid-column: wide;
   margin-bottom: clamp(3.5rem, 9vh, 6rem);

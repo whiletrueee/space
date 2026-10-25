@@ -39,6 +39,13 @@ export default function WritingIndex() {
               .map((p) => (
                 <li key={p.slug}>
                   <Link href={`/writing/${p.slug}/`} className="w-entry">
+                    {p.frame && (
+                      <span className="spine" style={{ background: p.frame.tone }} aria-hidden>
+                        {/* eslint-disable-next-line @next/next/no-img-element -- static export, no optimizer */}
+                        <img src={p.frame.small} alt="" loading="lazy" style={{ objectPosition: `50% ${p.frame.focus}` }} />
+                        <span className="no">{p.frame.number}</span>
+                      </span>
+                    )}
                     <span className="w-kicker meta">
                       <time dateTime={p.date.toISOString()}>{formatDate(p.date).replace(/ \d{4}$/, "")}</time>
                       <span className="sep">·</span>

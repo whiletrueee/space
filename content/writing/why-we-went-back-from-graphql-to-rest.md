@@ -2,6 +2,9 @@
 title: Why we went back from GraphQL to REST
 date: 2026-09-03T11:26:00+05:30
 summary: Our GraphQL layer answered HTTP 200 to every failure, and most of the odd code around it traced back to that. Removing it took ten days, deleted about 4,700 lines, and the last step was rm, not a rewrite.
+frame: 007
+tone: "#bfa894"
+focus: 62%
 ---
 
 Our GraphQL endpoint returned HTTP 200 when it failed. Every time. The failure lived in an `errors[]` array in the body, and nearly everything strange about the code around it traced back to that one fact.

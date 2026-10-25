@@ -2,6 +2,9 @@
 title: Measure before you build primitives
 date: 2026-10-22T08:47:00+05:30
 summary: I parsed every flex and grid block in a large dashboard before designing layout components. The data picked five primitives, then a closer look cut it to three and a prop.
+frame: 026
+tone: "#3f4621"
+focus: 50%
 ---
 
 Our dashboard has 1,515 places that set `display: "flex"`, spread over 605 files. It has zero layout primitives. Every one of those blocks was designed by hand, and an agent asked to build a new screen designs the 1,516th by hand too, with a slightly different gap.

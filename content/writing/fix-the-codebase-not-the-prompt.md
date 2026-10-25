@@ -2,6 +2,9 @@
 title: Fix the codebase, not the prompt
 date: 2026-08-12T15:22:00+05:30
 summary: A codebase a designer can safely change is the same codebase an agent can safely change. Prompts are the wrong place to put that work; lint rules and structure are the right one.
+frame: 030
+tone: "#888178"
+focus: 45%
 ---
 
 A codebase that a non-engineer can change correctly is the same codebase an LLM can change correctly. Both need one property: there is one obvious way to do each thing, and the code says what it is for. I spent a while treating "make agents better at our repo" and "make our repo easier for product and design to touch" as two projects. They are one project with one prerequisite.
