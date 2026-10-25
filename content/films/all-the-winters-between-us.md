@@ -51,16 +51,16 @@ FADE OUT.
 | --- | --- | --- | --- |
 | January | Delhi, Sunder Nursery and Lodhi Garden | Fog swallowing the domes at dawn, breath in the air, tea from a kulhad | The promise, made small enough to keep |
 | February | Zanskar, Ladakh | The Chadar: a frozen river you walk on, ice groaning under your feet | Trust. Walking on something that could crack |
-| March | Hampi, Karnataka | Boulder fields gold at sunrise, a round coracle turning on the Tungabhadra | Play, and the small dreams, planned out loud |
+| March | Punjab, the fields outside Amritsar | Wheat turning from green to gold, the last of the mustard, a tube-well running at noon, a dhaba at dusk | Play, and the small dreams, planned out loud |
 | April | Garkone, Kargil | Apricot blossom, white and pink, against bare brown mountains | Something fragile flowering in a hard place |
 | May | Yumthang Valley, North Sikkim | Rhododendrons red across the valley, snow still on the peaks | The high point. The most in love they will ever be |
 | June | Mumbai | The first monsoon on the Art Deco seafront, Bandra's old lanes in the rain, an Irani café with steamed windows | The city pulls them apart: work, distance, the missed call |
 | July | Nongriat, Meghalaya | Living root bridges in cloud, rain for weeks | What holds when it will not stop raining, and what doesn't |
-| August | Valley of Flowers, Uttarakhand | Wildflowers in the rain, a trail for one | The first trip one of them takes alone |
+| August | Athirappilly and the Vazhachal rainforest, Kerala | The falls at full monsoon roar, the forest dripping, mist that never lifts | The first trip one of them takes alone |
 | September | Ziro Valley, Arunachal Pradesh | Green and gold paddies, pine hills, a music festival in the fields | Noise, new people, the beginning of moving on |
 | October | Kolkata, West Bengal | Durga Puja: the whole city lit, drums all night | The crowd where you think you see them |
 | November | Shillong, Meghalaya | Cherry blossom in autumn, pink in the wrong season | Something blooming too late |
 | December | Kalpa, Kinnaur | First snow on the apple orchards, the peaks pink at dawn | Quiet. The year closing. The dream achieved, alone |
 | January | Delhi, Sunder Nursery and Lodhi Garden | The same fog | The same bench, a year later |
 
-**Kept in reserve.** Flamingos on the Sewri mudflats in Mumbai, thousands of them in front of the cranes and the port, for a winter or spring scene in the city. Gurez, a valley on the Line of Control, for a Kashmir that nobody has filmed to death.
+**Kept in reserve.** The coffee estates of Coorg in the monsoon, mist through the shade trees, if August wants to move to Karnataka. Hampi, boulder fields gold at sunrise, for a spring that is drier and stranger. Flamingos on the Sewri mudflats in Mumbai, thousands of them in front of the cranes and the port, for a winter or spring scene in the city. Gurez, a valley on the Line of Control, for a Kashmir that nobody has filmed to death.
