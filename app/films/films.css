@@ -499,3 +499,192 @@
   padding: 0.15lh 2ch 0.15lh 0;
   vertical-align: top;
 }
+
+/* ---------- the television on the desk ---------- */
+
+/*
+ * The YouTube player is the screen: at least 200 by 200, and nothing is ever layered over it.
+ * Everything that makes it look like a CRT, the curve, the glow, the bezel, sits around it.
+ */
+.crt {
+  position: fixed;
+  right: clamp(1rem, 2.5vw, 2.5rem);
+  /* clear of the footer bar, which would otherwise pass over the screen at the end of a page */
+  bottom: 5rem;
+  z-index: 5;
+  width: 19rem;
+  font-family: var(--font-script), monospace;
+  filter: drop-shadow(0 1.4rem 1.8rem rgb(0 0 0 / 0.6));
+  rotate: -2deg;
+}
+.crt-body {
+  position: relative;
+  padding: 1rem 1rem 0.9rem;
+  border-radius: 1.6rem 1.6rem 1.1rem 1.1rem;
+  background:
+    radial-gradient(ellipse at 30% 0%, rgb(255 255 255 / 0.35), transparent 55%),
+    linear-gradient(180deg, #e3d8c2, #c9bc9f 70%, #b3a586);
+  box-shadow:
+    inset 0 2px 0 rgb(255 255 255 / 0.6),
+    inset 0 -3px 0 rgb(0 0 0 / 0.18);
+}
+.crt-vents {
+  position: absolute;
+  top: 0.45rem;
+  left: 50%;
+  width: 40%;
+  height: 0.3rem;
+  translate: -50% 0;
+  background: repeating-linear-gradient(to right, rgb(0 0 0 / 0.28) 0 0.35rem, transparent 0.35rem 0.6rem);
+  border-radius: 1px;
+}
+/* the dark plastic around the tube, and the tube's own glow when it is on */
+.crt-bezel {
+  padding: 0.8rem;
+  border-radius: 1.1rem;
+  background: #1c1a17;
+  box-shadow:
+    inset 0 0 0 2px #0d0c0a,
+    inset 0 0.4rem 1rem rgb(0 0 0 / 0.8);
+}
+.crt-screen {
+  display: grid;
+  width: 100%;
+  min-width: 200px;
+  height: 208px;
+  border-radius: 0.6rem;
+  background: #050605;
+  transition: box-shadow 1.2s;
+}
+.is-on .crt-screen {
+  box-shadow: 0 0 1.8rem rgb(170 210 255 / 0.25);
+}
+.crt-screen iframe {
+  display: block;
+  width: 100%;
+  min-width: 200px;
+  height: 100%;
+  min-height: 200px;
+  border: 0;
+}
+/* dark glass before the power is on: a curve of reflected room light, and the channel card */
+.crt-glass {
+  position: relative;
+  display: grid;
+  place-items: center;
+  border-radius: 0.6rem;
+  background:
+    radial-gradient(ellipse at 30% 25%, rgb(255 255 255 / 0.09), transparent 45%),
+    radial-gradient(ellipse at 50% 50%, #12161a, #050605 75%);
+  overflow: hidden;
+}
+.crt-glass p {
+  font-size: 0.7rem;
+  line-height: 1.5;
+  letter-spacing: 0.18em;
+  text-align: center;
+  text-transform: uppercase;
+  color: rgb(170 220 190 / 0.4);
+}
+/* warming up: a white line across the tube that opens into a picture */
+.crt-glass.is-warming::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: #e9f3ff;
+  animation: tube 0.65s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+@keyframes tube {
+  0% {
+    transform: scale(0.02, 0.004);
+    opacity: 1;
+  }
+  45% {
+    transform: scale(1, 0.006);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1, 1);
+    opacity: 0.15;
+  }
+}
+
+.crt-panel {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin-top: 0.75rem;
+  padding: 0 0.2rem;
+}
+.crt-label {
+  flex: 1;
+  font-size: 0.72rem;
+  font-weight: 700;
+  line-height: 1.25;
+  text-transform: uppercase;
+  color: #3b342a;
+}
+.crt-label span {
+  display: block;
+  font-weight: 400;
+  font-size: 0.62rem;
+  color: #5d5446;
+}
+.crt-knob {
+  width: 1.15rem;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #6a6258, #2a2621 70%);
+  box-shadow: 0 1px 1px rgb(0 0 0 / 0.4), inset 0 1px 0 rgb(255 255 255 / 0.2);
+}
+.crt-power {
+  display: grid;
+  place-items: center;
+  width: 1.6rem;
+  aspect-ratio: 1;
+  border: 0;
+  border-radius: 0.3rem;
+  background: linear-gradient(#f2ead9, #cfc3a8);
+  box-shadow:
+    0 2px 0 #8f8268,
+    0 3px 4px rgb(0 0 0 / 0.3);
+  cursor: pointer;
+}
+.crt-power:active {
+  translate: 0 2px;
+  box-shadow: 0 0 0 #8f8268;
+}
+.crt-led {
+  width: 0.4rem;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: #5a1a14;
+}
+.is-on .crt-led {
+  background: #ff4a2e;
+  box-shadow: 0 0 0.5rem #ff4a2e;
+}
+.crt-foot {
+  width: 42%;
+  height: 0.7rem;
+  margin: 0 auto;
+  border-radius: 0 0 0.5rem 0.5rem;
+  background: linear-gradient(#a99b7c, #8a7e63);
+}
+
+/* where there's no room beside the page, the television sits on the desk after the last page */
+@media (max-width: 1240px) {
+  .crt {
+    position: relative;
+    right: auto;
+    bottom: auto;
+    margin: 0 auto 3rem;
+    rotate: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .crt-glass.is-warming::after {
+    animation: none;
+    opacity: 0;
+  }
+}

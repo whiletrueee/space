@@ -1,5 +1,6 @@
 import { Courier_Prime } from "next/font/google";
 import { Chrome } from "../chrome";
+import { Crt } from "./crt";
 import { Desk } from "./desk";
 import "../writing/writing.css";
 import "./films.css";
@@ -13,6 +14,7 @@ export default function FilmsLayout({ children }: LayoutProps<"/films">) {
       <div className={`sp-root ${script.variable}`}>
         <Desk />
         {children}
+        <Crt />
       </div>
     </Chrome>
   );
