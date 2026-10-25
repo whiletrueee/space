@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { FitTitle } from "../writing/fit-title";
 
@@ -129,7 +130,8 @@ export function FilmHouse({ concepts, stages }: { concepts: Concept[]; stages: [
         ) : (
           <ol className="f-sheets">
             {concepts.map((c, i) => (
-              <li key={c.slug} className="f-sheet">
+              <li key={c.slug}>
+                <Link href={`/films/${c.slug}/`} className="f-sheet">
                 <div className="f-still">
                   {c.still && (
                     // eslint-disable-next-line @next/next/no-img-element -- static export, no optimizer
@@ -146,6 +148,7 @@ export function FilmHouse({ concepts, stages }: { concepts: Concept[]; stages: [
                   <p className="f-logline">{c.logline}</p>
                   {c.tone && <p className="c-meta f-tone">{c.tone}</p>}
                 </div>
+                </Link>
               </li>
             ))}
           </ol>
