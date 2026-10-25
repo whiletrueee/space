@@ -39,7 +39,7 @@ function frameOf(slug: string, data: Record<string, string>): Frame | undefined 
   };
 }
 
-function parseFrontmatter(raw: string, file: string) {
+export function parseFrontmatter(raw: string, file: string) {
   const m = raw.match(/^---\n([\s\S]*?)\n---\n?/);
   if (!m) throw new Error(`${file}: missing frontmatter`);
   const data: Record<string, string> = {};

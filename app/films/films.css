@@ -1,0 +1,325 @@
+/* Films: the cinema from the writing section, with a leader spliced on the front */
+
+/* the slate's fade overhangs both edges, so the page clips it rather than scrolling sideways */
+.f-house {
+  overflow-x: clip;
+}
+
+/* ---------- the leader ---------- */
+
+@property --sweep {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+.f-leader {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  display: grid;
+  place-items: center;
+  border: 0;
+  padding: 0;
+  background: #1b1a18;
+  color: #ebe6dd;
+  cursor: pointer;
+  overflow: hidden;
+}
+/* the crosshair printed on every leader frame */
+.f-leader::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(to right, transparent calc(50% - 0.5px), rgb(235 230 221 / 0.28) 0 calc(50% + 0.5px), transparent 0),
+    linear-gradient(to bottom, transparent calc(50% - 0.5px), rgb(235 230 221 / 0.28) 0 calc(50% + 0.5px), transparent 0);
+}
+/* scratches and dust: a moving grain over the whole frame */
+.f-leader::after {
+  content: "";
+  position: absolute;
+  inset: -50%;
+  opacity: 0.16;
+  mix-blend-mode: screen;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: grain 0.5s steps(5) infinite;
+}
+.f-leader.is-pop {
+  background: #fff;
+}
+.f-leader.is-pop::before,
+.f-leader.is-pop::after {
+  display: none;
+}
+
+.f-dial {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: min(64vmin, 36rem);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 2px solid rgb(235 230 221 / 0.7);
+  outline: 2px solid rgb(235 230 221 / 0.35);
+  outline-offset: min(3.5vmin, 1.6rem);
+  overflow: hidden;
+  /* gate weave: the frame never sits perfectly still in a projector */
+  animation: weave 0.24s steps(2) infinite;
+}
+/* the wedge that sweeps round once per number */
+.f-sweep {
+  position: absolute;
+  inset: 0;
+  background: conic-gradient(rgb(0 0 0 / 0.42) var(--sweep), transparent 0);
+  animation: sweep 0.82s linear forwards;
+}
+.f-num {
+  position: relative;
+  font-family: var(--font-display), serif;
+  font-size: min(44vmin, 24rem);
+  line-height: 1;
+  transform: translateY(-0.04em);
+}
+.f-skip {
+  position: absolute;
+  bottom: 2rem;
+  z-index: 1;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.625rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgb(235 230 221 / 0.45);
+}
+@keyframes sweep {
+  to {
+    --sweep: 360deg;
+  }
+}
+@keyframes weave {
+  50% {
+    translate: 0.6px -0.8px;
+  }
+}
+
+/* ---------- the opening ---------- */
+
+.f-open,
+.f-slate,
+.f-stages {
+  position: relative;
+  z-index: 1;
+  width: min(100% - 2.5rem, 80rem);
+  margin-inline: auto;
+}
+.f-open {
+  min-height: calc(100svh - 3.5rem);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto 1fr auto;
+  padding: 2rem 0 2.25rem;
+}
+.f-open-title {
+  align-self: end;
+  padding-bottom: clamp(2rem, 7vh, 4.5rem);
+}
+/* the title arrives with the picture, after the leader */
+.f-house .f-open-title,
+.f-house .f-open .c-slate {
+  transition:
+    opacity 1.8s cubic-bezier(0.4, 0, 0.2, 1) 0.4s,
+    translate 1.8s cubic-bezier(0.2, 0, 0.2, 1) 0.4s;
+}
+.f-house.is-leader .f-open-title,
+.f-house.is-leader .f-open .c-slate {
+  opacity: 0;
+  translate: 0 1.5rem;
+}
+.f-lede {
+  max-width: 33rem;
+  margin-top: clamp(1.5rem, 4vh, 2.5rem);
+  font-family: var(--font-text), serif;
+  font-size: clamp(1.2rem, 1.7vw, 1.45rem);
+  line-height: 1.45;
+  font-style: italic;
+  color: var(--screen-dim);
+}
+
+/* below the opening the picture fades out under the type */
+.f-slate,
+.f-stages {
+  isolation: isolate;
+}
+.f-slate::before {
+  content: "";
+  position: absolute;
+  inset: 0 -50vw -100vh;
+  z-index: -1;
+  background: linear-gradient(to bottom, transparent, rgb(5 4 3 / 0.92) 14rem);
+}
+
+/* ---------- the slate ---------- */
+
+.f-slate {
+  padding: clamp(6rem, 16vh, 10rem) 0 clamp(4rem, 10vh, 6rem);
+}
+.f-slate-head {
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgb(243 238 230 / 0.3);
+}
+.f-slate-head h2 {
+  font-weight: 400;
+}
+
+/* no concepts yet: an unexposed strip of film running through the gate */
+.f-empty {
+  padding: clamp(3rem, 8vh, 5rem) 0 0;
+  text-align: center;
+}
+.f-strip {
+  position: relative;
+  display: flex;
+  gap: 0.6rem;
+  width: 100%;
+  padding: 1.6rem 0;
+  overflow: hidden;
+  background: rgb(0 0 0 / 0.55);
+  mask-image: linear-gradient(to right, transparent, #000 15%, #000 85%, transparent);
+}
+/* sprocket holes, top and bottom */
+.f-strip::before,
+.f-strip::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 0.6rem;
+  background: repeating-linear-gradient(to right, transparent 0 0.7rem, rgb(243 238 230 / 0.16) 0.7rem 1.5rem);
+}
+.f-strip::before {
+  top: 0.5rem;
+}
+.f-strip::after {
+  bottom: 0.5rem;
+}
+.f-strip span {
+  flex: 0 0 auto;
+  width: clamp(9rem, 18vw, 15rem);
+  aspect-ratio: 3 / 2;
+  background:
+    radial-gradient(ellipse at 50% 40%, rgb(243 238 230 / 0.07), transparent 70%),
+    rgb(243 238 230 / 0.025);
+  border: 1px solid rgb(243 238 230 / 0.1);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .f-strip span {
+    animation: transport 9s linear infinite;
+  }
+  .f-strip::before,
+  .f-strip::after {
+    animation: sprockets 9s linear infinite;
+  }
+}
+@keyframes transport {
+  to {
+    translate: calc(-1 * (clamp(9rem, 18vw, 15rem) + 0.6rem)) 0;
+  }
+}
+@keyframes sprockets {
+  to {
+    background-position: -1.5rem 0;
+  }
+}
+.f-empty p {
+  max-width: 32rem;
+  margin: 2.25rem auto 0;
+  font-family: var(--font-text), serif;
+  font-size: 1.15rem;
+  line-height: 1.5;
+  font-style: italic;
+  color: var(--screen-dim);
+}
+
+/* each concept as a one-sheet: a still, a title and its logline */
+.f-sheets {
+  list-style: none;
+}
+.f-sheet {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+  gap: clamp(1.5rem, 4vw, 3.5rem);
+  align-items: end;
+  padding: clamp(2.5rem, 7vh, 4.5rem) 0;
+  border-bottom: 1px solid rgb(243 238 230 / 0.12);
+}
+.f-still {
+  aspect-ratio: 2.39 / 1;
+  background: rgb(243 238 230 / 0.04);
+  overflow: hidden;
+}
+.f-still img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.f-sheet-title {
+  margin-top: 0.9rem;
+  font-family: var(--font-display), serif;
+  font-weight: 400;
+  font-size: clamp(2.2rem, 4.4vw, 3.8rem);
+  line-height: 0.95;
+}
+.f-logline {
+  margin-top: 1.1rem;
+  font-family: var(--font-text), serif;
+  font-size: 1.15rem;
+  line-height: 1.5;
+  color: var(--screen-dim);
+}
+.f-tone {
+  margin-top: 1.1rem;
+}
+@media (max-width: 760px) {
+  .f-sheet {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* ---------- how a concept becomes a film ---------- */
+
+.f-stages {
+  padding: 0 0 clamp(6rem, 14vh, 9rem);
+}
+.f-stages ol {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  list-style: none;
+  border-top: 1px solid rgb(243 238 230 / 0.3);
+}
+.f-stages li {
+  display: grid;
+  gap: 0.7rem;
+  align-content: start;
+  padding: 1.5rem 1.5rem 0 0;
+}
+.f-stage {
+  font-family: var(--font-display), serif;
+  font-size: clamp(1.8rem, 2.8vw, 2.5rem);
+  line-height: 1;
+}
+.f-meaning {
+  font-family: var(--font-text), serif;
+  font-size: 1rem;
+  line-height: 1.45;
+  font-style: italic;
+  color: var(--screen-dim);
+}
+@media (max-width: 760px) {
+  .f-stages ol {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    row-gap: 1.5rem;
+  }
+}
