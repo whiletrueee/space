@@ -1,18 +1,15 @@
-/*
- * About: one column of plain statements with a lot of air around them. A mono label sits
- * beside each block on wider screens and above it on phones. Colours come from .w-page.
- */
+/* About: a name, one line of belief, two short sections and links, with a lot of air around them. Colours come from .w-page. */
 
 .ab-root {
   flex: 1;
-  width: min(100% - 2.5rem, 52rem);
+  width: min(100% - 2.5rem, 44rem);
   margin-inline: auto;
   padding: clamp(5rem, 18vh, 11rem) 0 clamp(6rem, 20vh, 12rem);
 }
 
-.ab-kicker,
-.ab-label,
-.ab-stack span,
+.ab-name,
+.ab-role,
+.ab-section h2,
 .ab-links {
   font-family: var(--font-geist-mono), ui-monospace, monospace;
   font-size: 0.6875rem;
@@ -20,61 +17,50 @@
   letter-spacing: 0.16em;
   text-transform: uppercase;
 }
-
-.ab-kicker {
+.ab-name {
+  color: var(--ink);
+}
+.ab-role {
+  margin-top: 0.5rem;
   color: var(--muted);
 }
-.ab-head h1 {
-  margin-top: 1.5rem;
+
+.ab-thesis {
+  margin-top: clamp(2rem, 6vh, 3rem);
   font-family: var(--font-display), serif;
-  font-size: clamp(3rem, 8vw, 5.5rem);
+  font-size: clamp(2.8rem, 7.5vw, 5.25rem);
   font-weight: 400;
   line-height: 0.98;
   letter-spacing: -0.015em;
+  text-wrap: balance;
 }
-.ab-head em {
+.ab-thesis em {
   color: var(--muted);
 }
-.ab-lede {
-  max-width: 34rem;
-  margin-top: 2rem;
-  font-family: var(--font-text), serif;
-  font-size: clamp(1.2rem, 1.9vw, 1.4rem);
-  line-height: 1.5;
-  text-wrap: pretty;
-}
 
-.ab-row {
-  display: grid;
-  gap: 0.9rem;
-  margin-top: clamp(4.5rem, 12vh, 7.5rem);
+.ab-section {
+  margin-top: clamp(4.5rem, 12vh, 7rem);
   padding-top: 1.75rem;
   border-top: 1px solid var(--rule);
 }
-@media (min-width: 720px) {
-  .ab-row {
-    grid-template-columns: 10rem minmax(0, 1fr);
-    gap: 2.5rem;
-  }
-}
-
-.ab-label {
-  padding-top: 0.45rem;
+.ab-section h2 {
   color: var(--muted);
 }
-
-.ab-body {
-  max-width: 36rem;
+.ab-section p,
+.ab-foot p {
+  max-width: 34rem;
+  margin-top: 1rem;
   font-family: var(--font-text), serif;
-  font-size: 1.15rem;
+  font-size: 1.2rem;
   line-height: 1.65;
   text-wrap: pretty;
 }
-.ab-body > * + * {
-  margin-top: 1.25rem;
+
+.ab-foot {
+  margin-top: clamp(5rem, 14vh, 8rem);
 }
-.ab-body strong {
-  font-weight: 600;
+.ab-foot p {
+  color: var(--muted);
 }
 
 .ab-root a {
@@ -87,55 +73,8 @@
   text-decoration-color: var(--ink);
 }
 
-.ab-list {
-  display: grid;
-  gap: 1rem;
-}
-.ab-list li {
-  padding-left: 1.5rem;
-  text-indent: -1.5rem;
-}
-.ab-list li::before {
-  content: "—";
-  display: inline-block;
-  width: 1.5rem;
-  text-indent: 0;
-  color: var(--muted);
-}
-
-/* the judgment stack: the code comes last and sits quietest */
-.ab-stack {
-  display: grid;
-  gap: 0.35rem;
-  font-family: var(--font-display), serif;
-  font-size: clamp(1.6rem, 3vw, 2.1rem);
-  line-height: 1.15;
-}
-.ab-stack li {
-  display: flex;
-  align-items: baseline;
-  gap: 1.25rem;
-}
-.ab-stack span {
-  color: var(--muted);
-}
-.ab-stack li:last-child {
-  color: var(--muted);
-  font-style: italic;
-}
-
 .ab-links {
   display: flex;
   gap: 2.5rem;
-  padding-top: 0.45rem;
-}
-
-.ab-close {
-  margin-top: clamp(6rem, 18vh, 10rem);
-  font-family: var(--font-display), serif;
-  font-style: italic;
-  font-size: clamp(2rem, 5vw, 3.5rem);
-  line-height: 1;
-  text-align: center;
-  color: var(--muted);
+  margin-top: 2rem;
 }
