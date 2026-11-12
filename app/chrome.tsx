@@ -8,7 +8,7 @@ import { bar, nav } from "./site";
 const display = Instrument_Serif({ weight: "400", style: ["normal", "italic"], subsets: ["latin"], variable: "--font-display" });
 const text = Newsreader({ style: ["normal", "italic"], axes: ["opsz"], subsets: ["latin"], variable: "--font-text" });
 
-/** The letterboxed page shared by the writing and film sections. */
+/** The letterboxed page shared by every inner section. */
 export function Chrome({ active, children }: { active: string; children: ReactNode }) {
   return (
     <div className={`w-page ${display.variable} ${text.variable}`}>

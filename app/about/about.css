@@ -1,0 +1,40 @@
+/* About: one sentence and two links, alone on the page. Colours come from .w-page. */
+
+.ab-root {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: min(100% - 2.5rem, 52rem);
+  margin-inline: auto;
+  padding: clamp(5rem, 18vh, 11rem) 0;
+}
+
+.ab-title {
+  font-family: var(--font-display), serif;
+  font-size: clamp(2.4rem, 6vw, 4.25rem);
+  font-weight: 400;
+  line-height: 1.02;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+
+.ab-links {
+  display: flex;
+  gap: 2.5rem;
+  margin-top: clamp(3rem, 8vh, 5rem);
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.ab-root a {
+  text-decoration: underline;
+  text-decoration-color: var(--rule);
+  text-underline-offset: 0.2em;
+  transition: text-decoration-color 0.2s;
+}
+.ab-root a:hover {
+  text-decoration-color: var(--ink);
+}

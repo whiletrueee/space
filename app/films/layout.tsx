@@ -2,7 +2,7 @@ import { Courier_Prime } from "next/font/google";
 import { Chrome } from "../chrome";
 import { Crt } from "./crt";
 import { Desk } from "./desk";
-import "../writing/writing.css";
+import "../screen.css";
 import "./films.css";
 
 // Courier Prime: Courier's metrics, so a page sets like a 12-point screenplay, but drawn to be read
