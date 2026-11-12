@@ -40,12 +40,14 @@ export default function About() {
         </h1>
       </header>
 
-      {sections.map((s) => (
-        <section key={s.title} className="ab-section">
-          <h2>{s.title}</h2>
-          <p>{s.body}</p>
-        </section>
-      ))}
+      <div className="ab-sections">
+        {sections.map((s) => (
+          <section key={s.title} className="ab-section">
+            <h2>{s.title}</h2>
+            <p>{s.body}</p>
+          </section>
+        ))}
+      </div>
 
       <footer className="ab-foot">
         <p>

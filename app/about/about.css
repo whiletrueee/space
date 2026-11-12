@@ -1,10 +1,21 @@
-/* About: a name, one line of belief, two short sections and links, with a lot of air around them. Colours come from .w-page. */
+/*
+ * About: one screen, never a scroll. The page fills the space between the letterbox bars and
+ * every size is tied to the viewport's shorter side, so the whole thing fits from a phone held
+ * sideways to a wide monitor. Set in Geist, like the homepage. Colours come from .w-page.
+ */
 
 .ab-root {
+  --fit: min(1vw, 1vh);
   flex: 1;
-  width: min(100% - 2.5rem, 44rem);
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: clamp(1rem, 4vh, 3rem);
+  width: min(100% - 2.5rem, 72rem);
   margin-inline: auto;
-  padding: clamp(5rem, 18vh, 11rem) 0 clamp(6rem, 20vh, 12rem);
+  padding: clamp(1.25rem, 7vh, 5rem) 0 clamp(1.25rem, 6vh, 4rem);
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
 }
 
 .ab-name,
@@ -12,54 +23,63 @@
 .ab-section h2,
 .ab-links {
   font-family: var(--font-geist-mono), ui-monospace, monospace;
-  font-size: 0.6875rem;
+  font-size: clamp(0.625rem, calc(0.5rem + 0.25 * var(--fit)), 0.75rem);
   font-weight: 400;
   letter-spacing: 0.16em;
   text-transform: uppercase;
 }
-.ab-name {
-  color: var(--ink);
-}
 .ab-role {
-  margin-top: 0.5rem;
+  margin-top: 0.4rem;
   color: var(--muted);
 }
 
 .ab-thesis {
-  margin-top: clamp(2rem, 6vh, 3rem);
-  font-family: var(--font-display), serif;
-  font-size: clamp(2.8rem, 7.5vw, 5.25rem);
-  font-weight: 400;
-  line-height: 0.98;
-  letter-spacing: -0.015em;
+  margin-top: clamp(1rem, 5vh, 3rem);
+  font-size: clamp(2rem, calc(9 * var(--fit)), 7rem);
+  font-weight: 600;
+  line-height: 0.95;
+  letter-spacing: -0.05em;
   text-wrap: balance;
 }
 .ab-thesis em {
+  font-style: normal;
+  font-weight: 300;
   color: var(--muted);
 }
 
+.ab-sections {
+  display: grid;
+  gap: clamp(1rem, 4vh, 3rem) clamp(1.5rem, 5vw, 4.5rem);
+}
+@media (min-width: 720px), (orientation: landscape) {
+  .ab-sections {
+    grid-template-columns: 1fr 1fr;
+  }
+}
 .ab-section {
-  margin-top: clamp(4.5rem, 12vh, 7rem);
-  padding-top: 1.75rem;
+  padding-top: clamp(0.75rem, 2vh, 1.25rem);
   border-top: 1px solid var(--rule);
 }
 .ab-section h2 {
   color: var(--muted);
 }
-.ab-section p,
-.ab-foot p {
-  max-width: 34rem;
-  margin-top: 1rem;
-  font-family: var(--font-text), serif;
-  font-size: 1.2rem;
-  line-height: 1.65;
+.ab-section p {
+  margin-top: clamp(0.4rem, 1.5vh, 0.9rem);
+  font-size: clamp(0.85rem, calc(0.55rem + 0.75 * var(--fit)), 1.15rem);
+  line-height: 1.5;
+  letter-spacing: -0.01em;
   text-wrap: pretty;
 }
 
 .ab-foot {
-  margin-top: clamp(5rem, 14vh, 8rem);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem 2rem;
 }
 .ab-foot p {
+  font-size: clamp(0.8rem, calc(0.5rem + 0.6 * var(--fit)), 1rem);
   color: var(--muted);
 }
 
@@ -75,6 +95,58 @@
 
 .ab-links {
   display: flex;
-  gap: 2.5rem;
-  margin-top: 2rem;
+  gap: 2rem;
+}
+
+/* short screens, mostly phones held sideways: take the air out so it still fits */
+@media (max-height: 520px) {
+  .ab-root {
+    gap: 0.7rem;
+    padding-block: 0.75rem;
+  }
+  .ab-thesis {
+    margin-top: 0.6rem;
+  }
+}
+
+/* phones held upright: height is the tight side, so type and spacing follow it */
+@media (max-width: 719px) and (orientation: portrait) {
+  .ab-root {
+    gap: 2.4vh;
+    padding-block: 3vh;
+  }
+  .ab-thesis {
+    margin-top: 2vh;
+    font-size: min(11vw, 6vh);
+  }
+  .ab-sections {
+    gap: 2.4vh;
+  }
+  .ab-section {
+    padding-top: 1.4vh;
+  }
+  .ab-section p {
+    margin-top: 0.8vh;
+    font-size: clamp(0.72rem, 2.05vh, 1rem);
+    line-height: 1.4;
+  }
+}
+
+/* short landscape screens get smaller text as well as less air */
+@media (max-height: 520px) {
+  .ab-section p {
+    font-size: clamp(0.72rem, 3.1vh, 0.95rem);
+    line-height: 1.4;
+  }
+}
+
+/* the smallest phones */
+@media (max-width: 719px) and (max-height: 600px) {
+  .ab-root {
+    gap: 1.8vh;
+    padding-block: 1.8vh;
+  }
+  .ab-section p {
+    line-height: 1.33;
+  }
 }
