@@ -24,7 +24,7 @@ const geistSans = localFont({
 export const metadata: Metadata = {
   title: "whiletrueee — Harshit Singh",
   description:
-    "The things we do do things to us. Software engineer, filmmaker, photographer, collector of unfinished ideas.",
+    "The things we do do things to us. Senior software engineer at Headout, filmmaker, photographer.",
 };
 
 export const viewport: Viewport = {

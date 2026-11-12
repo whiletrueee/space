@@ -23,7 +23,7 @@ const projects = [
   },
   {
     name: "Headout",
-    blurb: "Software engineer at Headout.",
+    blurb: "Senior software engineer at Headout.",
     href: "https://www.headout.com",
   },
 ];
@@ -125,8 +125,7 @@ export default function Home() {
         className={`${bar} flex flex-col gap-1.5 py-4 sm:h-14 sm:flex-row sm:items-center sm:justify-between sm:py-0`}
       >
         <p className="text-white/85">
-          Software engineer / filmmaker / photographer / collector of
-          unfinished ideas.
+          Senior software engineer at Headout / filmmaker / photographer.
         </p>
         <p>Bangalore, India</p>
       </footer>
