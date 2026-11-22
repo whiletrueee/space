@@ -1,152 +1,301 @@
 /*
- * About: one screen, never a scroll. The page fills the space between the letterbox bars and
- * every size is tied to the viewport's shorter side, so the whole thing fits from a phone held
- * sideways to a wide monitor. Set in Geist, like the homepage. Colours come from .w-page.
+ * About: one screen, never a scroll. A twelve-column grid with a single axis on column 5: the
+ * second line of the thesis, the section bodies and the footer all start there, so the page
+ * reads as one column of thought with labels hung in the margin to its left. Every size is tied
+ * to the viewport's shorter side so it fits from a phone held sideways to a wide monitor.
+ * Set in Geist, like the homepage. Colours come from .w-page.
  */
+
+/* paper white whatever the reader's theme; the letterbox bars stay black */
+.w-page:has(.ab-root) {
+  --paper: #f7f7f5;
+  --ink: #111111;
+  --muted: #737373;
+  --rule: #e2e2e0;
+}
+.w-page:has(.ab-root)::before {
+  mix-blend-mode: multiply;
+  opacity: 0.05;
+}
 
 .ab-root {
   --fit: min(1vw, 1vh);
+  --gap: clamp(1rem, 2.5vw, 2rem);
+  --mono: var(--font-geist-mono), ui-monospace, monospace;
   flex: 1;
   min-height: 0;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  gap: clamp(1rem, 4vh, 3rem);
-  width: min(100% - 2.5rem, 72rem);
+  width: min(100% - 2.5rem, 80rem);
   margin-inline: auto;
-  padding: clamp(1.25rem, 7vh, 5rem) 0 clamp(1.25rem, 6vh, 4rem);
+  padding: clamp(1.25rem, 5vh, 3.5rem) 0 clamp(1.25rem, 5vh, 3rem);
   font-family: var(--font-geist-sans), system-ui, sans-serif;
 }
 
-.ab-name,
-.ab-role,
+/* the shared grid every row sits on */
+.ab-meta,
+.ab-section,
+.ab-foot {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--gap);
+  align-items: baseline;
+}
+
+.ab-meta,
 .ab-section h2,
+.ab-no,
 .ab-links {
-  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-family: var(--mono);
   font-size: clamp(0.625rem, calc(0.5rem + 0.25 * var(--fit)), 0.75rem);
   font-weight: 400;
   letter-spacing: 0.16em;
   text-transform: uppercase;
 }
-.ab-role {
-  margin-top: 0.4rem;
+
+/* ---------- head ---------- */
+
+.ab-head {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  /* spare height splits evenly above and below the thesis */
+  grid-template-rows: auto 1fr auto auto 1fr;
+  column-gap: var(--gap);
+}
+.ab-head > .ab-meta {
+  grid-column: 1 / -1;
+}
+
+.ab-meta {
+  padding-bottom: clamp(0.6rem, 1.6vh, 1rem);
+  border-bottom: 1px solid var(--rule);
   color: var(--muted);
+}
+.ab-name {
+  grid-column: 1 / 5;
+  color: var(--ink);
+}
+.ab-role {
+  grid-column: 5 / 11;
+}
+.ab-place {
+  grid-column: 11 / -1;
+  justify-self: end;
+}
+
+.ab-place {
+  display: flex;
+  gap: 1.25em;
+}
+.ab-clock {
+  white-space: nowrap;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+
+/* the cursor after the answer: the page is whiletrueee, so it never stops */
+.ab-caret {
+  display: inline-block;
+  width: 0.07em;
+  height: 0.74em;
+  margin-left: 0.08em;
+  background: var(--ink);
+  vertical-align: -0.02em;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .ab-caret {
+    animation: ab-blink 1.1s steps(1) infinite;
+  }
+}
+@keyframes ab-blink {
+  50% {
+    opacity: 0;
+  }
 }
 
 .ab-thesis {
-  margin-top: clamp(1rem, 5vh, 3rem);
-  font-size: clamp(2rem, calc(9 * var(--fit)), 7rem);
+  display: contents;
+  font-size: clamp(2.25rem, calc(11 * var(--fit)), 9.5rem);
   font-weight: 600;
-  line-height: 0.95;
-  letter-spacing: -0.05em;
+  line-height: 0.92;
+  letter-spacing: -0.055em;
+}
+.ab-thesis > * {
+  grid-column: 1 / -1;
+  font: inherit;
   text-wrap: balance;
 }
+.ab-thesis > span {
+  grid-row: 3;
+  margin-top: clamp(1.25rem, 4.5vh, 3.5rem);
+}
+/* the answer steps in to the axis on column 5 */
 .ab-thesis em {
+  grid-column: 5 / -1;
+  grid-row: 4;
+  padding-bottom: clamp(1.25rem, 4.5vh, 3.5rem);
   font-style: normal;
   font-weight: 300;
   color: var(--muted);
 }
 
+/* ---------- sections: an index, numbered in the margin ---------- */
+
 .ab-sections {
-  display: grid;
-  gap: clamp(1rem, 4vh, 3rem) clamp(1.5rem, 5vw, 4.5rem);
-}
-@media (min-width: 720px), (orientation: landscape) {
-  .ab-sections {
-    grid-template-columns: 1fr 1fr;
-  }
+  list-style: none;
 }
 .ab-section {
-  padding-top: clamp(0.75rem, 2vh, 1.25rem);
+  padding-block: clamp(0.8rem, 2.2vh, 1.5rem);
   border-top: 1px solid var(--rule);
 }
-.ab-section h2 {
+.ab-no {
+  grid-column: 1 / 2;
   color: var(--muted);
 }
+.ab-section h2 {
+  grid-column: 2 / 5;
+  line-height: 1.6;
+  text-wrap: balance;
+}
 .ab-section p {
-  margin-top: clamp(0.4rem, 1.5vh, 0.9rem);
-  font-size: clamp(0.85rem, calc(0.55rem + 0.75 * var(--fit)), 1.15rem);
-  line-height: 1.5;
-  letter-spacing: -0.01em;
+  grid-column: 5 / 12;
+  max-width: 40em;
+  font-size: clamp(0.9rem, calc(0.55rem + 0.85 * var(--fit)), 1.3rem);
+  line-height: 1.45;
+  letter-spacing: -0.012em;
   text-wrap: pretty;
 }
 
+/* ---------- foot ---------- */
+
 .ab-foot {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 0.75rem 2rem;
+  padding-top: clamp(0.9rem, 2.6vh, 1.75rem);
+  border-top: 1px solid var(--rule);
 }
 .ab-foot p {
+  grid-column: 5 / 10;
   font-size: clamp(0.8rem, calc(0.5rem + 0.6 * var(--fit)), 1rem);
   color: var(--muted);
 }
-
-.ab-root a {
-  text-decoration: underline;
-  text-decoration-color: var(--rule);
-  text-underline-offset: 0.2em;
-  transition: text-decoration-color 0.2s;
-}
-.ab-root a:hover {
-  text-decoration-color: var(--ink);
-}
-
 .ab-links {
+  grid-column: 10 / -1;
+  justify-self: end;
   display: flex;
   gap: 2rem;
 }
 
-/* short screens, mostly phones held sideways: take the air out so it still fits */
-@media (max-height: 520px) {
-  .ab-root {
-    gap: 0.7rem;
-    padding-block: 0.75rem;
+/* ---------- links ---------- */
+
+.ab-root a {
+  text-decoration: underline;
+  text-decoration-color: var(--rule);
+  text-underline-offset: 0.25em;
+  transition:
+    color 0.2s,
+    text-decoration-color 0.2s;
+}
+.ab-root a:hover {
+  color: var(--ink);
+  text-decoration-color: var(--ink);
+}
+.ab-links a {
+  text-decoration: none;
+}
+.ab-links a span {
+  display: inline-block;
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.ab-links a:hover span {
+  transform: translate(0.15em, -0.15em);
+}
+
+/* ---------- entrance: each row rises in turn, short and quiet ---------- */
+
+@media (prefers-reduced-motion: no-preference) {
+  .ab-rise {
+    animation: ab-rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) calc(0.1s + var(--i, 0) * 120ms) both;
   }
-  .ab-thesis {
+}
+@keyframes ab-rise {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 0.9rem, 0);
+  }
+}
+
+/* ---------- narrow screens: the margin folds into the column ---------- */
+
+@media (max-width: 719px) {
+  .ab-name {
+    grid-column: 1 / -1;
+  }
+  .ab-role {
+    grid-column: 1 / 10;
+    margin-top: 0.35rem;
+  }
+  .ab-place {
+    grid-column: 10 / -1;
+  }
+  .ab-thesis em {
+    grid-column: 1 / -1;
+  }
+  .ab-no {
+    grid-column: 1 / 2;
+  }
+  .ab-section h2 {
+    grid-column: 2 / -1;
+  }
+  .ab-section p {
+    grid-column: 1 / -1;
     margin-top: 0.6rem;
+  }
+  .ab-foot p,
+  .ab-links {
+    grid-column: 1 / -1;
+    justify-self: start;
+  }
+  .ab-links {
+    margin-top: 0.75rem;
   }
 }
 
 /* phones held upright: height is the tight side, so type and spacing follow it */
 @media (max-width: 719px) and (orientation: portrait) {
-  .ab-root {
-    gap: 2.4vh;
-    padding-block: 3vh;
-  }
   .ab-thesis {
-    margin-top: 2vh;
-    font-size: min(11vw, 6vh);
-  }
-  .ab-sections {
-    gap: 2.4vh;
+    font-size: min(12.5vw, 6.5vh);
   }
   .ab-section {
-    padding-top: 1.4vh;
+    padding-block: 2vh;
   }
   .ab-section p {
-    margin-top: 0.8vh;
-    font-size: clamp(0.72rem, 2.05vh, 1rem);
+    font-size: clamp(0.8rem, 2.15vh, 1.05rem);
     line-height: 1.4;
   }
 }
 
-/* short landscape screens get smaller text as well as less air */
+/* short screens, mostly phones held sideways: take the air out so it still fits */
 @media (max-height: 520px) {
+  .ab-root {
+    padding-block: 0.75rem;
+  }
+  .ab-thesis {
+    font-size: clamp(1.75rem, 8vh, 2.5rem);
+  }
+  .ab-thesis em {
+    padding-bottom: 0.6rem;
+  }
+  .ab-thesis > span {
+    margin-top: 0.75rem;
+  }
+  .ab-section {
+    padding-block: 0.5rem;
+  }
   .ab-section p {
     font-size: clamp(0.72rem, 3.1vh, 0.95rem);
-    line-height: 1.4;
+    line-height: 1.38;
   }
-}
-
-/* the smallest phones */
-@media (max-width: 719px) and (max-height: 600px) {
-  .ab-root {
-    gap: 1.8vh;
-    padding-block: 1.8vh;
-  }
-  .ab-section p {
-    line-height: 1.33;
+  .ab-foot {
+    padding-top: 0.6rem;
   }
 }

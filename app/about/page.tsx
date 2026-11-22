@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import type { CSSProperties } from "react";
+import { Clock } from "./clock";
 
 export const metadata: Metadata = {
   title: "About — whiletrueee",
@@ -23,33 +25,46 @@ const links = [
   { label: "LinkedIn", href: "https://www.linkedin.com/in/harshitportal" },
 ];
 
+// stagger for the entrance, in steps of 120ms
+const step = (i: number) => ({ "--i": i }) as CSSProperties;
+
 export default function About() {
   return (
     <main className="ab-root">
-      <header>
-        <p className="ab-name">Harshit Singh</p>
-        <p className="ab-role">
-          Senior Software Engineer ·{" "}
-          <a href="https://www.headout.com" target="_blank" rel="noreferrer">
-            Headout
-          </a>{" "}
-          · Bangalore
+      <header className="ab-head">
+        <p className="ab-meta ab-rise" style={step(0)}>
+          <span className="ab-name">Harshit Singh</span>
+          <span className="ab-role">
+            Senior Software Engineer ·{" "}
+            <a href="https://www.headout.com" target="_blank" rel="noreferrer">
+              Headout
+            </a>
+          </span>
+          <span className="ab-place">
+            Bangalore <Clock />
+          </span>
         </p>
         <h1 className="ab-thesis">
-          Code is cheap now. <em>Judgment isn&rsquo;t.</em>
+          <span className="ab-rise" style={step(1)}>
+            Code is cheap now.
+          </span>{" "}
+          <em className="ab-rise" style={step(2)}>
+            Judgment isn&rsquo;t.<span className="ab-caret" aria-hidden />
+          </em>
         </h1>
       </header>
 
-      <div className="ab-sections">
-        {sections.map((s) => (
-          <section key={s.title} className="ab-section">
+      <ol className="ab-sections">
+        {sections.map((s, i) => (
+          <li key={s.title} className="ab-section ab-rise" style={step(3 + i)}>
+            <span className="ab-no">0{i + 1}</span>
             <h2>{s.title}</h2>
             <p>{s.body}</p>
-          </section>
+          </li>
         ))}
-      </div>
+      </ol>
 
-      <footer className="ab-foot">
+      <footer className="ab-foot ab-rise" style={step(5)}>
         <p>
           Off the clock: <Link href="/films/">films not yet shot</Link>, photographs.
         </p>
@@ -57,7 +72,7 @@ export default function About() {
           {links.map((l) => (
             <li key={l.label}>
               <a href={l.href} target="_blank" rel="noreferrer">
-                {l.label} ↗
+                {l.label} <span aria-hidden>↗</span>
               </a>
             </li>
           ))}
