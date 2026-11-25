@@ -23,10 +23,10 @@ export default function ProjectsIndex() {
         </p>
         <h1 className="pj-thesis">
           <span className="pj-rise" style={step(1)}>
-            Things you can open
+            Insomnia, given a shape.
           </span>{" "}
           <em className="pj-rise" style={step(2)}>
-            in a browser.
+            Walk in.
           </em>
         </h1>
       </header>
