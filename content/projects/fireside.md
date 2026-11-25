@@ -1,5 +1,5 @@
 ---
-title: Musafirkhana
+title: Fireside
 logline: A story fire on the internet. One fire a night, by the Beas river in Manali. Everyone hears the same story at the same second.
 status: live
 url: https://fire.whiletrueee.com
@@ -10,7 +10,7 @@ stats: 1 fire a night | 30 minutes | 6 stories | 1 shared second
 
 ## What it is
 
-Musafirkhana means a rest house for travellers. This project is a fire that you can visit on the internet.
+Fireside is a fire that you can visit on the internet. Travellers come to it to tell stories and to listen.
 
 The fire opens once a night, at 11:30 pm in India. You sit at the fire with the other people who are there at that time. Travellers tell short stories: love, gossip, travel, office romance and ghosts. After half an hour, the fire goes out. The next night has new stories.
 
@@ -21,7 +21,7 @@ Everyone hears the same story at the same second. You cannot pause it, and you c
 
 People told stories around a fire before they wrote anything. I want to know if this still works on the internet. The test is simple. Do people stay for a full story? Do they come back the next night?
 
-![Before the fire opens: tonight's stories and the time.](/projects/musafirkhana/gate.jpg)
+![Before the fire opens: tonight's stories and the time.](/projects/fireside/gate.jpg)
 
 ## How I made it
 
@@ -37,13 +37,13 @@ Real visitors walk in and sit on the logs around the fire. The host is Kabir. A 
 
 AI agents wrote the stories from a brief, like a writers' room. Each story is short, has an ending, and feels like something that happened to a friend.
 
-![A story at the fire. Real visitors sit with the cast.](/projects/musafirkhana/telling.jpg)
+![A story at the fire. Real visitors sit with the cast.](/projects/fireside/telling.jpg)
 
 ### The studio
 
 I direct each night like a play. For this, I made a tool called Theatre Studio. It has a timeline for the voices, the camera shots, the sounds and the notes. I put each camera move on a word in the story. Then I publish the night, and the fire plays it.
 
-![Theatre Studio: the running order, the stage and the timeline.](/projects/musafirkhana/studio.jpg)
+![Theatre Studio: the running order, the stage and the timeline.](/projects/fireside/studio.jpg)
 
 ## For engineers
 

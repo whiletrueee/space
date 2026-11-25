@@ -48,6 +48,18 @@ const md = new Marked({
   },
 });
 
+// each h2 and everything up to the next one becomes a row: the heading hangs in the margin, the rest sits on the axis
+const sections = (html: string) =>
+  html
+    .split(/(?=<h2[ >])/)
+    .filter((part) => part.trim())
+    .map((part, i) => {
+      const m = part.match(/^<h2[^>]*>([\s\S]*?)<\/h2>([\s\S]*)$/);
+      if (!m) return `<div class="pj-sec-body">${part}</div>`;
+      return `<section class="pj-sec"><span class="pj-no">${String(i + 1).padStart(2, "0")}</span><h2>${m[1]}</h2><div class="pj-sec-body">${m[2]}</div></section>`;
+    })
+    .join("");
+
 const DIR = join(process.cwd(), "content/projects");
 const PUBLIC = join(process.cwd(), "public/projects");
 
@@ -71,7 +83,7 @@ export function getProjects(): Project[] {
         stack: (data.stack || "").split("·").map((s) => s.trim()).filter(Boolean),
         stats: (data.stats || "").split("|").map((s) => s.trim()).filter(Boolean),
         cover: existsSync(join(PUBLIC, slug, "cover.jpg")) ? `/projects/${slug}/cover.jpg` : undefined,
-        html: md.parse(body, { async: false }),
+        html: sections(md.parse(body, { async: false })),
       };
     })
     .sort((a, b) => b.date.getTime() - a.date.getTime());
