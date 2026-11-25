@@ -26,7 +26,7 @@ export default function ProjectsIndex() {
             Insomnia, given a shape.
           </span>{" "}
           <em className="pj-rise" style={step(2)}>
-            Walk in.
+            Walk in.<span className="pj-caret" aria-hidden />
           </em>
         </h1>
       </header>
